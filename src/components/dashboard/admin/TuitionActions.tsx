@@ -21,16 +21,13 @@ export default function TuitionActions({ tuitionId }: TuitionActionsProps) {
         setError("");
 
         try {
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/tuitions/${tuitionId}/status`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ approvalStatus }),
-                }
-            );
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tuitions/${tuitionId}/status`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ approvalStatus }),
+            });
 
             const result = await res.json();
 
