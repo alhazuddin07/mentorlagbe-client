@@ -1,11 +1,10 @@
-
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, X, Loader2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
+import { updateTuitionStatus } from "@/lib/api/tuitions/tuitions-api";
 
 interface TuitionActionsProps {
     tuitionId: string;
@@ -14,39 +13,25 @@ interface TuitionActionsProps {
 export default function TuitionActions({ tuitionId }: TuitionActionsProps) {
     const router = useRouter();
 
-    const [isPending, startTransition] = useTransition();
+    const [isUpdating, setIsUpdating] = useState(false);
     const [error, setError] = useState("");
 
-    const updateStatus = async (approvalStatus: "approved" | "rejected") => {
+    const handleStatusUpdate = async ( approvalStatus: "approved" | "rejected" ) => {
         setError("");
+        setIsUpdating(true);
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tuitions/${tuitionId}/status`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ approvalStatus }),
-            });
+            await updateTuitionStatus(tuitionId, approvalStatus);
 
-            const result = await res.json();
-
-            if (!res.ok || !result.success) {
-                throw new Error(
-                    result.message || "Failed to update tuition status"
-                );
-            }
-
-            startTransition(() => {
-                router.refresh();
-            });
-
+            router.refresh();
         } catch (error) {
             setError(
                 error instanceof Error
                     ? error.message
                     : "Something went wrong"
             );
+        } finally {
+            setIsUpdating(false);
         }
     };
 
@@ -55,11 +40,10 @@ export default function TuitionActions({ tuitionId }: TuitionActionsProps) {
             <div className="flex items-center gap-2">
                 <Button
                     size="sm"
-                    className="flex-1 gap-1.5 bg-emerald-600 text-white hover:bg-emerald-700"
-                    disabled={isPending}
-                    onClick={() => updateStatus("approved")}
+                    disabled={isUpdating}
+                    onClick={() => handleStatusUpdate("approved")}
                 >
-                    {isPending ? (
+                    {isUpdating ? (
                         <Loader2 className="size-4 animate-spin" />
                     ) : (
                         <Check className="size-4" />
@@ -70,9 +54,8 @@ export default function TuitionActions({ tuitionId }: TuitionActionsProps) {
                 <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 gap-1.5 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
-                    disabled={isPending}
-                    onClick={() => updateStatus("rejected")}
+                    disabled={isUpdating}
+                    onClick={() => handleStatusUpdate("rejected")}
                 >
                     <X className="size-4" />
                     Reject
@@ -80,9 +63,7 @@ export default function TuitionActions({ tuitionId }: TuitionActionsProps) {
             </div>
 
             {error && (
-                <p className="text-xs text-rose-600">
-                    {error}
-                </p>
+                <p className="text-xs text-red-500">{error}</p>
             )}
         </div>
     );

@@ -16,6 +16,7 @@ import {
     Building2,
 } from "lucide-react";
 
+import TuitionActions from "@/components/dashboard/admin/TuitionActions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getTuitions } from "@/lib/api/tuitions/tuitions-api";
@@ -278,37 +279,14 @@ export default async function AdminTuitionsPage() {
                                     {/* Action Buttons */}
                                     <div className="flex shrink-0 flex-wrap items-center gap-2 border-t pt-4 lg:flex-col lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
                                         {item.approvalStatus === "pending" && (
-                                            <>
-                                                <Button
-                                                    size="sm"
-                                                    className="flex-1 gap-1.5 bg-emerald-600 text-white hover:bg-emerald-700 lg:w-full"
-                                                    disabled
-                                                >
-                                                    <Check className="size-4" />
-                                                    Approve
-                                                </Button>
-
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="flex-1 gap-1.5 border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 lg:w-full"
-                                                    disabled
-                                                >
-                                                    <X className="size-4" />
-                                                    Reject
-                                                </Button>
-                                            </>
+                                            <TuitionActions tuitionId={item._id} />
                                         )}
 
                                         {item.approvalStatus === "approved" && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                className="w-full"
-                                                disabled
-                                            >
-                                                Unpublish
-                                            </Button>
+                                            <Badge className="border-0 bg-emerald-500/10 text-emerald-600">
+                                                <CheckCircle2 className="mr-1 size-3" />
+                                                Published
+                                            </Badge>
                                         )}
 
                                         {item.approvalStatus === "rejected" && (

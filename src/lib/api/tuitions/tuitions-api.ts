@@ -12,7 +12,8 @@ export const BrowseTuitions = async () => {
     return res.json();
 };
 
-export const updateTuitionStatus = async (tuitionId: string,  approvalStatus: "approved" | "rejected") => {
+export const updateTuitionStatus = async (tuitionId: string, approvalStatus: "approved" | "rejected") => {
+    
     const res = await fetch(`${BASE_URL}/tuitions/${tuitionId}/status`, {
         method: "PATCH",
         headers: {
@@ -21,5 +22,11 @@ export const updateTuitionStatus = async (tuitionId: string,  approvalStatus: "a
         body: JSON.stringify({ approvalStatus }),
     });
 
-    return res.json();
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+        throw new Error(result.message || "Failed to update tuition status");
+    }
+
+    return result;
 };
