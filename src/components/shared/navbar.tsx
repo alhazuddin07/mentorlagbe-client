@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-import { LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BrandLogo from "@/components/shared/brand-logo";
 import { useSession, signOut } from "@/lib/auth-client";
@@ -138,21 +138,38 @@ export default function Navbar() {
                     />
 
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold">
-                        {user.name}
-                      </p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="truncate text-sm font-semibold">
+                          {user.name}
+                        </p>
+                      </div>
 
                       <p className="truncate text-xs text-muted-foreground">
                         {user.email}
                       </p>
+                      <span className="inline-block mt-0.5 rounded bg-primary/10 px-1.5 py-0.2 text-[10px] font-medium text-primary capitalize">
+                        {(user as { role?: string })?.role || "student"}
+                      </span>
                     </div>
                   </div>
+
+                  {/* Dashboard link */}
+                  <Button
+                    variant="default"
+                    size="sm"
+                    nativeButton={false}
+                    render={<Link href="/dashboard" onClick={() => setProfileOpen(false)} />}
+                    className="mt-3 w-full"
+                  >
+                    <LayoutDashboard className="size-4 mr-1.5" />
+                    Dashboard
+                  </Button>
 
                   {/* Sign Out */}
                   <Button
                     variant="outline"
                     onClick={handleSignOut}
-                    className="mt-3 w-full"
+                    className="mt-2 w-full"
                   >
                     <LogOut className="size-4" />
                     Sign Out

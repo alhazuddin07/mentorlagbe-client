@@ -1,43 +1,46 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { Suspense } from "react";
+import { getSession } from "@/lib/get-session";
+import StudentDashboard from "@/components/dashboard/student/StudentDashboard";
+import TutorDashboard from "@/components/dashboard/tutor/TutorDashboard";
+import AdminDashboard from "@/components/dashboard/admin/AdminDashboard";
 
+async function DashboardContent() {
+    const session = await getSession();
 
-export default async function DashboardPage() {
-
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
     const user = session?.user;
+    const role = (user as { role?: string } | undefined)?.role ?? "student";
 
+    const userData = {
+        name: user?.name || "User",
+        email: user?.email || "",
+        image: user?.image,
+    };
+
+    if (role === "admin") {
+        return <AdminDashboard user={userData} />;
+    }
+
+    if (role === "tutor") {
+        return <TutorDashboard user={userData} />;
+    }
+
+    return <StudentDashboard user={userData} />;
+}
+
+function DashboardLoading() {
     return (
-        <div>
-            <h1 className="text-xl font-semibold tracking-tight">
-                Welcome back! 👋
-            </h1>
-            <h2>
-                {user?.role} Dashboard
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-                Here is an overview of your MentorLagbe activity.
+        <div className="flex min-h-[60vh] items-center justify-center">
+            <p className="text-sm text-muted-foreground">
+                Loading dashboard...
             </p>
-
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {[
-                    { title: "Active Tuitions", value: "0" },
-                    { title: "Applications", value: "0" },
-                    { title: "Unread Messages", value: "0" },
-                ].map((stat) => (
-                    <div
-                        key={stat.title}
-                        className="rounded-xl border bg-card p-5"
-                    >
-                        <p className="text-sm text-muted-foreground">
-                            {stat.title}
-                        </p>
-                        <p className="mt-1 text-2xl font-bold">{stat.value}</p>
-                    </div>
-                ))}
-            </div>
         </div>
+    );
+}
+
+export default function DashboardPage() {
+    return (
+        <Suspense fallback={<DashboardLoading />}>
+            <DashboardContent />
+        </Suspense>
     );
 }

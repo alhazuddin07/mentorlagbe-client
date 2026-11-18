@@ -97,6 +97,7 @@ export default function PostTuitionForm() {
 
             // 4. Prepare tuition data
             const tuitionData = {
+                tutorId: session?.user.id,
                 title: String(formData.get("title") || ""),
                 subject: String(formData.get("subject") || ""),
                 classLevel: String(formData.get("classLevel") || ""),

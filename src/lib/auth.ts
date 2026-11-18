@@ -10,19 +10,38 @@ export const auth = betterAuth({
         enabled: true,
     },
     user: {
-       additionalFields: {
-          role: {
-              type: ['admin', 'student', 'tutor'],
-              input: false,
-              defaultValue: 'student',
+        additionalFields: {
+            role: {
+                type: "string",
+                required: false,
+                defaultValue: "student",
+                input: true,
             },
             plan: {
                 type: "string",
                 required: false,
                 defaultValue: "free",
                 input: false,
-            }
-        }
+            },
+        },
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                before: async (user) => {
+                    const allowedRoles = ["student", "tutor"];
+                    const role = allowedRoles.includes(user.role as string)
+                        ? user.role
+                        : "student";
+                    return {
+                        data: {
+                            ...user,
+                            role,
+                        },
+                    };
+                },
+            },
+        },
     },
     database: mongodbAdapter(db, {
         client,

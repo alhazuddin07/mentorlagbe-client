@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -29,7 +28,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { signOut, useSession } from "@/lib/auth-client";
 
 import { roleBaseSidebarItems } from "@/config/sidebar-items";
-import { isUserRole, type NavItem } from "@/types/sidebar";
+import { isUserRole, type NavItem, type UserRole } from "@/types/sidebar";
 
 function SidebarNavItem({ item }: { item: NavItem }) {
   const pathname = usePathname();
@@ -58,16 +57,29 @@ function SidebarNavItem({ item }: { item: NavItem }) {
   );
 }
 
-export function AppSidebar() {
+export interface AppSidebarProps {
+  initialRole?: UserRole;
+  initialUser?: {
+    name: string;
+    email: string;
+    image?: string | null;
+    role?: string;
+  } | null;
+}
+
+export function AppSidebar({ initialRole, initialUser }: AppSidebarProps = {}) {
   const { setOpenMobile } = useSidebar();
   const { data: session, isPending } = useSession();
 
-  const user = session?.user ?? null;
+  const user = session?.user ?? initialUser ?? null;
 
-  // Get user role from Better Auth session
-  const roleValue = (user as { role?: unknown } | null)?.role;
+  // Get user role from Better Auth session or initial props
+  const roleValue =
+    (session?.user as { role?: unknown } | null)?.role ??
+    initialRole ??
+    initialUser?.role;
 
-  const role = isUserRole(roleValue) ? roleValue : "student";
+  const role: UserRole = isUserRole(roleValue) ? roleValue : "student";
 
   // Get sidebar groups according to user role
   const sidebarGroups = roleBaseSidebarItems[role];
@@ -76,6 +88,8 @@ export function AppSidebar() {
     setOpenMobile(false);
     await signOut();
   };
+
+  const showSkeleton = isPending && !user;
 
   return (
     <Sidebar collapsible="icon">
@@ -98,8 +112,8 @@ export function AppSidebar() {
                   Mentor<span className="text-primary">Lagbe</span>
                 </span>
 
-                <span className="truncate text-xs text-muted-foreground">
-                  Dashboard
+                <span className="truncate text-xs text-muted-foreground capitalize">
+                  {role} Portal
                 </span>
               </div>
             </SidebarMenuButton>
@@ -132,7 +146,7 @@ export function AppSidebar() {
       {/* Footer */}
       <SidebarFooter>
         <SidebarMenu>
-          {isPending ? (
+          {showSkeleton ? (
             <div className="flex flex-col gap-2 px-2 py-1">
               <div className="flex items-center gap-2">
                 <Skeleton className="size-8 rounded-full" />
@@ -157,16 +171,21 @@ export function AppSidebar() {
                 >
                   <Image
                     src={user.image || "/avatar.svg"}
-                    alt={user.name}
+                    alt={user.name || "User"}
                     width={32}
                     height={32}
                     className="size-8 shrink-0 rounded-full object-cover"
                   />
 
                   <div className="grid flex-1 text-left leading-tight">
-                    <span className="truncate text-sm font-semibold">
-                      {user.name}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="truncate text-sm font-semibold">
+                        {user.name}
+                      </span>
+                      <span className="inline-flex items-center rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary capitalize">
+                        {role}
+                      </span>
+                    </div>
 
                     <span className="truncate text-xs text-muted-foreground">
                       {user.email}

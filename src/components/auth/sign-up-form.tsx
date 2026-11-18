@@ -33,10 +33,25 @@ export default function SignUpForm() {
     const [pending, setPending] = useState(false);
     const router = useRouter();
 
+
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null;
 
         if (!file) return;
+
+        // 1. Validate image type
+        if (!file.type.startsWith("image/")) {
+            setError("Please select a valid image file.");
+            e.target.value = "";
+            return;
+        }
+
+        // 2. Validate image size (Maximum 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            setError("Image size must be less than 5MB.");
+            e.target.value = "";
+            return;
+        }
 
         setImageFile(file);
         setError("");
@@ -45,9 +60,10 @@ export default function SignUpForm() {
         const formData = new FormData();
         formData.append("image", file);
 
-        const imgbbAPI = `https://api.imgbb.com/1/upload?expiration=600&key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`
+        const imgbbAPI = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`;
 
         try {
+            // 3. Upload image to ImgBB
             const res = await fetch(imgbbAPI, {
                 method: "POST",
                 body: formData,
@@ -56,19 +72,33 @@ export default function SignUpForm() {
             const result = await res.json();
 
             if (!res.ok || !result.success) {
-                throw new Error("Image upload failed");
+                throw new Error(
+                    result.error?.message || "Image upload failed."
+                );
             }
 
+            // 4. Save uploaded image URL
             setImageURL(result.data.url);
+
         } catch (error) {
             console.error("Image upload error:", error);
+
             setImageFile(null);
             setImageURL("");
-            setError("Failed to upload image. Please try again.");
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to upload image. Please try again."
+            );
+
+            e.target.value = "";
+
         } finally {
             setUploading(false);
         }
     };
+
 
 
     const handleSignUp = async (e: FormEvent<HTMLFormElement>) => {
@@ -82,11 +112,12 @@ export default function SignUpForm() {
         setPending(true);
 
         try {
-            const { data, error } = await authClient.signUp.email({
+            const { error } = await authClient.signUp.email({
                 name: userData.name,
                 email: userData.email,
                 password: userData.password,
                 image: imageURL || undefined,
+                role: role as "student" | "tutor",
             })
 
             if (error) {
@@ -96,8 +127,8 @@ export default function SignUpForm() {
                 return
             }
 
-            router.push("/")
-            console.log({data, error});
+            router.push("/dashboard")
+            router.refresh()
         } catch {
             setError("Something went wrong. Please try again.")
         } finally {
@@ -123,6 +154,13 @@ export default function SignUpForm() {
                     Join MentorLagbe and start your journey today.
                 </p>
             </div>
+
+            {/* Error Message */}
+            {error && (
+                <div className="mb-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+                    {error}
+                </div>
+            )}
 
             <form
                 onSubmit={handleSignUp}
