@@ -15,7 +15,13 @@ export const auth = betterAuth({
               type: ['admin', 'student', 'tutor'],
               input: false,
               defaultValue: 'student',
-            } 
+            },
+            plan: {
+                type: "string",
+                required: false,
+                defaultValue: "free",
+                input: false,
+            }
         }
     },
     database: mongodbAdapter(db, {

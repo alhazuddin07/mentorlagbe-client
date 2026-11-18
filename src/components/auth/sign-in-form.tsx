@@ -16,6 +16,7 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "../ui/toast";
 
 export default function SignInForm() {
     const router = useRouter();
@@ -48,12 +49,20 @@ export default function SignInForm() {
                 return;
             }
 
-            router.push("/");
+            router.push("/dashboard");
             router.refresh();
+            toast.add({
+                title: 'success',
+                description: "Login successfully!"
+            })
 
         } catch (error) {
             console.error("Sign in error:", error);
             setError("Something went wrong. Please try again.");
+            toast.add({
+                title: 'error',
+                description: "Something went wrong. Please try again"
+            })
         } finally {
             setPending(false);
         }
@@ -169,7 +178,7 @@ export default function SignInForm() {
                         href="#"
                         className="text-sm font-medium text-[#5B3DF5] hover:underline"
                     >
-                        Forgot password?
+                        Forgot password? 
                     </Link>
                 </div>
 

@@ -76,7 +76,7 @@ export default function SignUpForm() {
         setError('');
 
         const formData = new FormData(e.currentTarget);
-        const userData = Object.fromEntries(formData.entries()) as { name: string, email: string, password: string };
+        const userData = Object.fromEntries(formData.entries()) as { name: string, email: string, password: string, image: string };
         console.log(userData);
 
         setPending(true);
@@ -194,7 +194,6 @@ export default function SignUpForm() {
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        required
                         onChange={handleImageChange}
                     />
                 </div>

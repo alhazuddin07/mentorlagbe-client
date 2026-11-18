@@ -1,122 +1,47 @@
-
-"use client";
+'use client';
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, LogOut, Loader2 } from "lucide-react";
-
+import Image from "next/image";
+import { LogOut, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BrandLogo from "@/components/shared/brand-logo";
+import { useSession, signOut } from "@/lib/auth-client";
 import { cn } from "cn";
-import { authClient } from "@/lib/auth-client";
-import Image from "next/image";
 
 const publicNavItems = [
   { label: "Home", href: "/" },
   { label: "Browse Tuitions", href: "/tuitions" },
   { label: "Pricing", href: "/pricing" },
   { label: "How It Works", href: "/about" },
+  { label: "Dashboard", href: "/dashboard" },
 ] as const;
-
-function UserAvatar({ user }: { user?: { image?: string | null; name?: string | null };
-}) {
-  return (
-    <div className="flex items-center gap-2">
-      {user?.image ? (
-        <Image
-          src={user.image}
-          alt={user.name || "User"}
-          width={36}
-          height={36}
-          className="h-9 w-9 rounded-full border border-border object-cover"
-        />
-      ) : (
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
-          {user?.name?.charAt(0).toUpperCase() || "U"}
-        </div>
-      )}
-
-      <span className="hidden max-w-28 truncate text-sm font-medium sm:block">
-        {user?.name}
-      </span>
-    </div>
-  );
-}
-
-function SignOutButton({
-  mobile = false,
-  isSigningOut,
-  onSignOut,
-}: {
-  mobile?: boolean;
-  isSigningOut: boolean;
-  onSignOut: () => void;
-}) {
-  return (
-    <Button
-      variant="outline"
-      disabled={isSigningOut}
-      onClick={onSignOut}
-      className={cn(
-        "border-primary/40 text-primary hover:bg-primary/10 hover:text-primary",
-        mobile && "w-full"
-      )}
-    >
-      {isSigningOut ? (
-        <Loader2 className="size-4 animate-spin" />
-      ) : (
-        <LogOut className="size-4" />
-      )}
-      Sign Out
-    </Button>
-  );
-}
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
-
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
-  const { data: session, isPending } = authClient.useSession();
-
-  const user = session?.user;
+  const { data: session, isPending } = useSession();
+  const user = session?.user ?? null;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  // Sign Out
   const handleSignOut = async () => {
-    try {
-      setIsSigningOut(true);
-
-      const { error } = await authClient.signOut();
-
-      if (error) {
-        console.error("Sign out failed:", error);
-        return;
-      }
-
-      setMenuOpen(false);
-      router.replace("/sign-in");
-      router.refresh();
-    } catch (error) {
-      console.error("Sign out error:", error);
-    } finally {
-      setIsSigningOut(false);
-    }
+    setMenuOpen(false);
+    setProfileOpen(false);
+    await signOut();
   };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
       <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-
         {/* Brand */}
         <BrandLogo />
 
-        {/* Desktop Navigation */}
+        {/* Public navigation items (desktop) */}
         <ul className="hidden items-center gap-1 md:flex">
           {publicNavItems.map((item) => (
             <li key={item.href}>
@@ -133,37 +58,112 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop Auth Actions */}
-        <div className="flex items-center gap-3">
-          {isPending ? (
-            <div className="h-9 w-20 animate-pulse rounded-lg bg-muted" />
-          ) : user ? (
-            <>
-              <UserAvatar user={user} />
-              <SignOutButton isSigningOut={isSigningOut} onSignOut={handleSignOut} />
-            </>
-          ) : (
-            <>
+        <div className="flex items-center gap-2">
+          {/* Session loading state */}
+          {isPending && (
+            <div className="hidden h-8 w-28 animate-pulse rounded-lg bg-muted sm:block" />
+          )}
+
+          {/* Auth actions (unauthenticated state) */}
+          {!isPending && !user && (
+            <div className="hidden items-center gap-2 sm:flex">
               <Button
                 variant="outline"
                 nativeButton={false}
                 render={<Link href="/sign-in" />}
-                className="hidden border-primary/40 text-primary hover:text-primary aria-expanded:text-primary dark:hover:bg-primary/10 sm:inline-flex"
+                className="border-primary/40 text-primary hover:text-primary aria-expanded:text-primary dark:hover:bg-primary/10"
               >
                 Sign In
               </Button>
-
-              <Button
-                nativeButton={false}
-                render={<Link href="/sign-up" />}
-                className="hidden sm:inline-flex"
-              >
+              <Button nativeButton={false} render={<Link href="/sign-up" />}>
                 Sign Up
               </Button>
-            </>
+            </div>
           )}
 
-          {/* Mobile Menu Toggle */}
+          {/* User avatar (authenticated state, desktop only — mobile shows it inside the menu) */}
+          {!isPending && user && (
+            <div className="relative hidden md:block">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-expanded={profileOpen}
+                aria-haspopup="menu"
+                aria-label="Open profile menu"
+                onClick={() => setProfileOpen((open) => !open)}
+                className="size-9 rounded-full"
+              >
+                <Image
+                  src={user.image ?? "/avatar.svg"}
+                  alt={user.name}
+                  width={36}
+                  height={36}
+                  className="size-9 rounded-full"
+                />
+              </Button>
+
+              {/* Close on outside click */}
+              {profileOpen && (
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setProfileOpen(false)}
+                />
+              )}
+
+              {/* Profile dropdown (desktop) */}
+
+              {profileOpen && (
+                <div className="absolute right-0 z-50 mt-2 w-56 rounded-xl border bg-popover p-3 shadow-lg">
+
+                  {/* Close Button */}
+                  <div className="mb-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => setProfileOpen(false)}
+                      className="rounded-full p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                      aria-label="Close profile menu"
+                    >
+                      <X className="size-4" />
+                    </button>
+                  </div>
+
+                  {/* User Info */}
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={user.image ?? "/avatar.svg"}
+                      alt={user.name}
+                      width={40}
+                      height={40}
+                      className="size-10 rounded-full object-cover"
+                    />
+
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">
+                        {user.name}
+                      </p>
+
+                      <p className="truncate text-xs text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Sign Out */}
+                  <Button
+                    variant="outline"
+                    onClick={handleSignOut}
+                    className="mt-3 w-full"
+                  >
+                    <LogOut className="size-4" />
+                    Sign Out
+                  </Button>
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* Hamburger toggle (mobile / tap) */}
           <Button
             variant="ghost"
             size="icon"
@@ -173,16 +173,12 @@ export default function Navbar() {
             onClick={() => setMenuOpen((open) => !open)}
             className="md:hidden"
           >
-            {menuOpen ? (
-              <X className="size-5" />
-            ) : (
-              <Menu className="size-5" />
-            )}
+            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </Button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu (tap) */}
       {menuOpen && (
         <div
           id="mobile-nav-menu"
@@ -195,7 +191,7 @@ export default function Navbar() {
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
                   className={cn(
-                    "flex min-h-11 items-center rounded-lg px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-muted",
+                    "flex min-h-11 items-center rounded-lg px-3 py-2 text-base font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted",
                     isActive(item.href) && "bg-muted text-foreground"
                   )}
                 >
@@ -205,41 +201,51 @@ export default function Navbar() {
             ))}
           </ul>
 
-          <div className="mt-3 border-t pt-3">
-            {isPending ? (
-              <div className="h-10 animate-pulse rounded-lg bg-muted" />
-            ) : user ? (
-              <div className="flex flex-col gap-3">
-                <UserAvatar user={user} />
-                <SignOutButton
-                  mobile
-                  isSigningOut={isSigningOut}
-                  onSignOut={handleSignOut}
+          {user ? (
+            <div className="mt-3">
+              <div className="flex items-center gap-3 rounded-lg border p-3">
+                <Image
+                  src={user.image ?? "/avatar.svg"}
+                  alt={user.name}
+                  width={40}
+                  height={40}
+                  className="size-10 rounded-full"
                 />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{user.name}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </p>
+                </div>
               </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline"
-                  nativeButton={false}
-                  render={<Link href="/sign-in" />}
-                  onClick={() => setMenuOpen(false)}
-                  className="min-h-11 border-primary/40 text-primary hover:text-primary"
-                >
-                  Sign In
-                </Button>
-
-                <Button
-                  nativeButton={false}
-                  render={<Link href="/sign-up" />}
-                  onClick={() => setMenuOpen(false)}
-                  className="min-h-11"
-                >
-                  Sign Up
-                </Button>
-              </div>
-            )}
-          </div>
+              <Button
+                variant="outline"
+                onClick={handleSignOut}
+                className="mt-2 min-h-11 w-full"
+              >
+                <LogOut className="size-4" />
+                Sign Out
+              </Button>
+            </div>
+          ) : (
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Button
+                variant="outline"
+                nativeButton={false}
+                render={<Link href="/sign-in" />}
+                className="min-h-11 border-primary/40 text-primary hover:text-primary dark:hover:bg-primary/10"
+              >
+                Sign In
+              </Button>
+              <Button
+                nativeButton={false}
+                render={<Link href="/sign-up" />}
+                className="min-h-11"
+              >
+                Sign Up
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </header>
