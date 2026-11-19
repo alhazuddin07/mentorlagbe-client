@@ -5,5 +5,5 @@ export interface IUser {
     role: "admin" | "student" | "tutor";
     status: "active" | "inactive";
     createdAt: string;
-    tuitionsCount: number;
+    tuitionsCount?: number;
 }

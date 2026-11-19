@@ -10,8 +10,6 @@ export default async function AdminUsersPage() {
 
     const users: IUser[] = await getUser();
 
-    console.log(users);
-
     return (
         <div className="space-y-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -69,13 +67,16 @@ export default async function AdminUsersPage() {
                                     </td>
                                     <td className="px-6 py-4 text-xs text-muted-foreground">
                                         {u.role === "tutor"
-                                            ? `${u.tuitionsCount} Tuitions Posted`
+                                            ? `${u.tuitionsCount ?? 0} Tuitions Posted`
                                             : u.role === "student"
-                                                ? `${u.tuitionsCount} Applications`
+                                                ? `${u.tuitionsCount ?? 0} Applications`
                                                 : "System Admin"}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <Badge variant="success" className="text-xs capitalize">
+                                        <Badge
+                                            variant={u.status === "active" ? "success" : "secondary"}
+                                            className="text-xs capitalize"
+                                        >
                                             {u.status}
                                         </Badge>
                                     </td>

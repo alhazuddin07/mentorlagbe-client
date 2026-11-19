@@ -13,9 +13,10 @@ import { imgbbApiURL } from "@/lib/imageBB";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "../ui/toast";
 import { useRouter } from "next/navigation";
+import { createTuition } from "@/lib/api/tuitions/tuitions-api";
 
 export default function PostTuitionForm() {
-    const [mode, setMode] = useState("online");
+    const [mode, setMode] = useState<"online" | "offline">("online");
     const [preview, setPreview] = useState("");
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
@@ -112,27 +113,11 @@ export default function PostTuitionForm() {
 
                 tutorName: user?.name,
                 tutorEmail: user?.email,
+                tutoreImage: user?.image,
             };
 
             // 5. Send data to Express backend
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/tutions`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(tuitionData),
-                }
-            );
-
-            const result = await res.json();
-
-            if (!res.ok) {
-                throw new Error(
-                    result.message || "Failed to create tuition."
-                );
-            }
+            const result = await createTuition(tuitionData);
 
             // 6. Success
             console.log("Tuition created:", result);
@@ -271,8 +256,14 @@ export default function PostTuitionForm() {
                                     name="mode"
                                     value="online"
                                     checked={mode === "online"}
-                                    onChange={(e) => setMode(e.target.value)}
                                     className="size-4 accent-[#5B3DF5]"
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+
+                                        if (value === "online" || value === "offline") {
+                                            setMode(value);
+                                        }
+                                    }}
                                 />
                                 Online (Zoom / Meet)
                             </label>
@@ -283,8 +274,14 @@ export default function PostTuitionForm() {
                                     name="mode"
                                     value="offline"
                                     checked={mode === "offline"}
-                                    onChange={(e) => setMode(e.target.value)}
                                     className="size-4 accent-[#5B3DF5]"
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+
+                                        if (value === "online" || value === "offline") {
+                                            setMode(value);
+                                        }
+                                    }}
                                 />
                                 Offline (In-Person / Home Visit)
                             </label>
@@ -314,7 +311,7 @@ export default function PostTuitionForm() {
 
                         <div className="space-y-2">
                             <Label htmlFor="monthlyFee">
-                                Monthly Fee ($ USD) <span className="text-red-500">*</span>
+                                Monthly Fee (৳ BDT) <span className="text-red-500">*</span>
                             </Label>
 
                             <Input

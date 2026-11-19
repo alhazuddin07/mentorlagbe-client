@@ -1,3 +1,4 @@
+import { IApplyTuition, ITuition, ITuitionPost } from "@/types/tuitions/tuitions";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -7,23 +8,22 @@ export const getTuitions = async () => {
     return res.json();
 };
 
-export const getSingleTuition = async (id: string) => {
-    const res = await fetch(`${BASE_URL}/tuition/${id}`,{
-        cache: "no-store"
-    });
 
-    const result = await res.json();
+export const getTuitionById = async (  id: string ): Promise<ITuition | null> => {
+    const res = await fetch(`${BASE_URL}/tuitions/${id}`,{
+            cache: "no-store",
+        }
+    );
 
-    console.log("Single Tuition API Status:", res.status);
-    console.log("Single Tuition API Response:", result);
-
-    if (!res.ok) {
-        throw new Error(
-            result.message || "Failed to fetch tuition"
-        );
+    if (res.status === 404) {
+        return null;
     }
 
-    return result;
+    if (!res.ok) {
+        throw new Error("Failed to fetch tuition");
+    }
+
+    return res.json();
 };
 
 
@@ -40,6 +40,25 @@ export const BrowseTuitions = async () => {
     return res.json();
 };
 
+export const createTuition = async (tuitionData: ITuitionPost) => {
+    const res = await fetch(`${BASE_URL}/tutions`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(tuitionData),
+        }
+    );
+
+    const result = await res.json();
+
+    if (!res.ok) {
+        throw new Error(result.message || "Failed to create tuition.");
+    }
+
+    return result;
+};
+
 export const updateTuitionStatus = async (tuitionId: string, approvalStatus: "approved" | "rejected") => {
 
     const res = await fetch(`${BASE_URL}/tuitions/${tuitionId}/status`, {
@@ -54,6 +73,24 @@ export const updateTuitionStatus = async (tuitionId: string, approvalStatus: "ap
 
     if (!res.ok || !result.success) {
         throw new Error(result.message || "Failed to update tuition status");
+    }
+
+    return result;
+};
+
+export const applyForTuition = async ( applicationData: IApplyTuition ) => {
+    const res = await fetch(`${BASE_URL}/apply-tuitions`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(applicationData),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+        throw new Error(result.message || "Failed to apply for tuition.");
     }
 
     return result;

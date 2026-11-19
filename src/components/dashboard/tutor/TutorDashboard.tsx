@@ -105,7 +105,7 @@ export default function TutorDashboard({ user }: TutorDashboardProps) {
     return (
         <div className="space-y-8">
             {/* Welcome Banner */}
-            <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 sm:p-8">
+            <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/5 to-transparent p-6 sm:p-8">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="flex items-center gap-2">

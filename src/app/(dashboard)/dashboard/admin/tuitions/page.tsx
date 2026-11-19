@@ -1,8 +1,6 @@
 
 import {
     ClipboardList,
-    Check,
-    X,
     CheckCircle2,
     Clock,
     XCircle,
@@ -257,7 +255,7 @@ export default async function AdminTuitionsPage() {
                                             <span className="flex items-center gap-1.5 text-muted-foreground">
                                                 <Wallet className="size-4" />
                                                 <strong className="text-foreground">
-                                                    ${item.monthlyFee.toLocaleString()}
+                                                    ৳{item.monthlyFee.toLocaleString()}
                                                 </strong>
                                                 / month
                                             </span>
