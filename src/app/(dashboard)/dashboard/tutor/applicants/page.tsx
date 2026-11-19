@@ -1,132 +1,230 @@
+// The applicant list comes from the backend with an uncached fetch, so this
+// route cannot be prerendered as part of an instant navigation. Allow it to
+// block on the server instead.
+export const instant = false;
+
 import Link from "next/link";
-import { Users, MessageCircle, CheckCircle2, Clock, Check, X } from "lucide-react";
+import {
+    Users,
+    MessageCircle,
+    CheckCircle2,
+    XCircle,
+    Clock,
+    Mail,
+    Phone,
+    CalendarDays,
+    BookOpen,
+    Inbox,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getApplications } from "@/lib/api/students/applications";
+import { IApplication } from "@/types/applications";
+import UpdateApplicationStatus from "@/components/dashboard/tutor/UpdateApplicationStatus";
 
-export default function TutorApplicantsPage() {
-    const applicants = [
-        {
-            id: "app-101",
-            studentName: "Sadman Sakib",
-            studentEmail: "sadman.s@example.com",
-            studentPhone: "+880 1712-345678",
-            tuitionTitle: "Comprehensive HSC Physics Mentorship",
-            classLevel: "HSC 2nd Year",
-            note: "I need targeted preparation in Thermodynamics and Electrostatics before test exam.",
-            appliedDate: "Nov 18, 2026",
-            status: "pending",
-        },
-        {
-            id: "app-102",
-            studentName: "Farhana Akter",
-            studentEmail: "farhana.akter@example.com",
-            studentPhone: "+880 1819-876543",
-            tuitionTitle: "O-Level Mathematics D & Additional Math",
-            classLevel: "Grade 10",
-            note: "Looking for intensive past paper solving 3 days a week.",
-            appliedDate: "Nov 16, 2026",
-            status: "accepted",
-        },
-        {
-            id: "app-103",
-            studentName: "Mehedi Hasan",
-            studentEmail: "mehedi.h@example.com",
-            studentPhone: "+880 1911-223344",
-            tuitionTitle: "Comprehensive HSC Physics Mentorship",
-            classLevel: "HSC 1st Year",
-            note: "Online batch preferred in evening hours.",
-            appliedDate: "Nov 15, 2026",
-            status: "pending",
-        },
+const getInitials = (name?: string) =>
+    (name || "S")
+        .split(" ")
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+
+const statusStyles: Record<string, { label: string; icon: React.ElementType; className: string}> = {
+    Accepted: {
+        label: "Accepted",
+        icon: CheckCircle2,
+        className:
+            "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400",
+    },
+    Declined: {
+        label: "Declined",
+        icon: XCircle,
+        className:
+            "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-400",
+    },
+    "Awaiting Decision": {
+        label: "Awaiting Decision",
+        icon: Clock,
+        className:
+            "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-400",
+    },
+};
+
+export default async function TutorApplicantsPage() {
+    const applicants: IApplication[] = await getApplications();
+
+    const pendingCount = applicants.filter((a) => a.status === "Awaiting Decision").length;
+    const acceptedCount = applicants.filter((a) => a.status === "Accepted").length;
+
+    const stats = [
+        { label: "Total Applicants", value: applicants.length, icon: Users, color: "bg-primary/10 text-primary" },
+        { label: "Awaiting Decision", value: pendingCount, icon: Clock, color: "bg-amber-500/10 text-amber-600" },
+        { label: "Accepted", value: acceptedCount, icon: CheckCircle2, color: "bg-emerald-500/10 text-emerald-600" },
     ];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
+            {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold tracking-tight">Student Applicants</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-3xl font-bold tracking-tight">Student Applicants</h1>
+                <p className="mt-1 text-sm text-muted-foreground">
                     Review and communicate with students who applied for your tuition listings.
                 </p>
             </div>
 
-            <div className="rounded-xl border bg-card shadow-xs overflow-hidden">
-                <div className="border-b px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <Users className="size-5 text-primary" />
-                        <span className="font-semibold text-sm">Applicant Requests</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                        {applicants.length} Total Applicants
-                    </span>
-                </div>
-
-                <div className="divide-y divide-border">
-                    {applicants.map((item) => (
-                        <div
-                            key={item.id}
-                            className="p-6 flex flex-col md:flex-row md:items-start md:justify-between gap-4 hover:bg-muted/30 transition-colors"
-                        >
-                            <div className="space-y-2">
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <h3 className="font-semibold text-base text-foreground">
-                                        {item.studentName}
-                                    </h3>
-                                    <Badge
-                                        variant={item.status === "accepted" ? "success" : "warning"}
-                                        className="text-xs capitalize"
-                                    >
-                                        {item.status === "accepted" ? (
-                                            <span className="flex items-center gap-1">
-                                                <CheckCircle2 className="size-3" /> Accepted
-                                            </span>
-                                        ) : (
-                                            <span className="flex items-center gap-1">
-                                                <Clock className="size-3" /> Awaiting Decision
-                                            </span>
-                                        )}
-                                    </Badge>
-                                </div>
-
-                                <p className="text-xs font-medium text-primary">
-                                    Applied for: {item.tuitionTitle} ({item.classLevel})
-                                </p>
-
-                                <div className="rounded-md bg-muted/50 p-3 text-xs text-foreground/80 italic">
-                                    &ldquo;{item.note}&rdquo;
-                                </div>
-
-                                <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
-                                    <span>Email: {item.studentEmail}</span>
-                                    <span>Phone: {item.studentPhone}</span>
-                                    <span>Applied on: {item.appliedDate}</span>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-row md:flex-col gap-2 shrink-0">
-                                {item.status === "pending" && (
-                                    <div className="flex items-center gap-2">
-                                        <Button size="sm" variant="outline" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
-                                            <Check className="size-3.5" /> Accept
-                                        </Button>
-                                        <Button size="sm" variant="outline" className="text-rose-600 hover:text-rose-700 hover:bg-rose-50">
-                                            <X className="size-3.5" /> Decline
-                                        </Button>
-                                    </div>
-                                )}
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    nativeButton={false}
-                                    render={<Link href="/dashboard/messages" />}
-                                >
-                                    <MessageCircle className="size-3.5" /> Message
-                                </Button>
-                            </div>
+            {/* Stats */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {stats.map(({ label, value, icon: Icon, color }) => (
+                    <div
+                        key={label}
+                        className="flex items-center gap-4 rounded-2xl border bg-card p-5 shadow-sm"
+                    >
+                        <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl ${color}`}>
+                            <Icon className="size-6" />
                         </div>
-                    ))}
+                        <div>
+                            <p className="text-2xl font-bold leading-none">{value}</p>
+                            <p className="mt-1 text-xs text-muted-foreground">{label}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Applicants */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                    <Users className="size-5 text-primary" />
+                    <h2 className="text-lg font-semibold">Applicant Requests</h2>
                 </div>
+
+                {applicants.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed bg-card py-16 text-center">
+                        <div className="flex size-14 items-center justify-center rounded-full bg-muted">
+                            <Inbox className="size-7 text-muted-foreground" />
+                        </div>
+                        <p className="mt-4 font-semibold">No applicants yet</p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            When students apply to your tuitions, they will show up here.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="grid gap-4">
+                        {applicants.map((item) => {
+                            const status = statusStyles[item.status] ?? statusStyles["Awaiting Decision"];
+                            const StatusIcon = status.icon;
+
+                            return (
+                                <div
+                                    key={item._id}
+                                    className="flex flex-col gap-5 rounded-2xl border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md md:flex-row md:items-start md:justify-between"
+                                >
+                                    <div className="flex min-w-0 flex-1 gap-4">
+                                        <Avatar className="size-12 shrink-0">
+                                            <AvatarFallback className="bg-linear-to-br from-indigo-500 to-violet-500 font-semibold text-white">
+                                                {getInitials(item.studentName)}
+                                            </AvatarFallback>
+                                        </Avatar>
+
+                                        <div className="min-w-0 flex-1 space-y-3">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <h3 className="text-base font-semibold text-foreground">
+                                                    {item.studentName}
+                                                </h3>
+                                                <Badge variant="outline" className={`gap-1 text-xs ${status.className}`}>
+                                                    <StatusIcon className="size-3" />
+                                                    {status.label}
+                                                </Badge>
+                                            </div>
+
+                                            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                                                <BookOpen className="size-3.5" />
+                                                {item.tuitionTitle} ({item.classLavel})
+                                            </div>
+
+                                            <blockquote className="rounded-lg border-l-4 border-primary/40 bg-muted/50 px-4 py-3 text-sm italic text-foreground/80">
+                                                &ldquo;{item.learningNote}&rdquo;
+                                            </blockquote>
+
+                                            <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                                                <span className="flex items-center gap-1.5">
+                                                    <Mail className="size-3.5" />
+                                                    {item.studentEmail}
+                                                </span>
+                                                <span className="flex items-center gap-1.5">
+                                                    <Phone className="size-3.5" />
+                                                    {item.phone}
+                                                </span>
+                                                <span className="flex items-center gap-1.5">
+                                                    <CalendarDays className="size-3.5" />
+                                                    {new Date(item.appliedDate).toLocaleDateString("en-US", {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                        year: "numeric",
+                                                    })}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Actions */}
+                                    {/* <div className="flex shrink-0 flex-wrap gap-2 md:w-36 md:flex-col">
+                                        {item.status === "Awaiting Decision" && (
+                                            <>
+                                                <Button
+                                                    size="sm"
+                                                    className="flex-1 bg-linear-to-r from-indigo-600 to-violet-600 text-white hover:bg-emerald-700 md:flex-none"
+                                                >
+                                                    <Check className="size-3.5" /> Accept
+                                                </Button>
+
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="flex-1 text-rose-600 hover:bg-rose-50 hover:text-rose-700 md:flex-none"
+                                                >
+                                                    <X className="size-3.5" /> Decline
+                                                </Button>
+                                            </>
+                                        )}
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex-1 md:flex-none"
+                                            nativeButton={false}
+                                            render={<Link href="/dashboard/messages" />}
+                                        >
+                                            <MessageCircle className="size-3.5" /> Message
+                                        </Button>
+                                    </div> */}
+
+                                    <div className="flex shrink-0 flex-wrap gap-2 md:w-36 md:flex-col">
+
+                                        <UpdateApplicationStatus
+                                            applicationId={item._id!}
+                                            status={item.status === "Rejected" ? "Declined" : item.status}
+                                        />
+
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex-1 md:flex-none"
+                                            nativeButton={false}
+                                            render={<Link href="/dashboard/messages" />}
+                                        >
+                                            <MessageCircle className="size-3.5" />
+                                            Message
+                                        </Button>
+
+                                    </div>
+
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
         </div>
     );
 }
-

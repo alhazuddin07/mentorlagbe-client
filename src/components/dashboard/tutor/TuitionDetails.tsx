@@ -178,7 +178,9 @@ const TuitionDetails = async ({ params }: Props) => {
 
                                 <Separator className="my-5" />
 
+                                {/* apply for tuitions button */}
                                 <ApplyNow tuition={tuition} />
+
                             </CardContent>
                         </Card>
 

@@ -38,13 +38,24 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
 
         const form = e.currentTarget;
         const formData = new FormData(form);
+        const phone = String(formData.get("phone") || "");
+
+        console.log("Current Tuition ID:", tuition._id);
+        console.log("Current Tuition Title:", tuition.title);
 
         try {
             const applicationData = {
                 tuitionId: tuition._id,
-                phone: String(formData.get("phone") || ""),
+                studentName: user?.name,
+                studentEmail: user?.email,
+                phone,
                 preferredSchedule: String(formData.get("preferredSchedule") || ""),
                 learningNote: String(formData.get("learningNote") || ""),
+                appliedDate: new Date(),
+                tuitionTitle: tuition.title,
+                classLavel: tuition.classLevel,
+                status: "Awaiting Decision",
+
             };
 
             const result = await applyForTuition(applicationData);

@@ -1,3 +1,7 @@
+// This page reads the request session, so it cannot be prerendered as part of
+// an instant navigation.
+export const instant = false;
+
 import { getSession } from "@/lib/get-session";
 import Image from "next/image";
 import { User, Mail, Shield, Crown } from "lucide-react";

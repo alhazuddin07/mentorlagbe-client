@@ -15,8 +15,8 @@ export interface ITuition {
     isActive: boolean;
     createdAt: string;
     tutoreImage: string;
+    applicantsCount?: number;
 }
-
 
 export interface ITuitionPost {
     tutorId?: string;

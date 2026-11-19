@@ -9,10 +9,10 @@ export const getTuitions = async () => {
 };
 
 
-export const getTuitionById = async (  id: string ): Promise<ITuition | null> => {
-    const res = await fetch(`${BASE_URL}/tuitions/${id}`,{
-            cache: "no-store",
-        }
+export const getTuitionById = async (id: string): Promise<ITuition | null> => {
+    const res = await fetch(`${BASE_URL}/tuitions/${id}`, {
+        cache: "no-store",
+    }
     );
 
     if (res.status === 404) {
@@ -41,13 +41,13 @@ export const BrowseTuitions = async () => {
 };
 
 export const createTuition = async (tuitionData: ITuitionPost) => {
-    const res = await fetch(`${BASE_URL}/tutions`,{
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(tuitionData),
-        }
+    const res = await fetch(`${BASE_URL}/tutions`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(tuitionData),
+    }
     );
 
     const result = await res.json();
@@ -78,7 +78,7 @@ export const updateTuitionStatus = async (tuitionId: string, approvalStatus: "ap
     return result;
 };
 
-export const applyForTuition = async ( applicationData: IApplyTuition ) => {
+export const applyForTuition = async (applicationData: IApplyTuition) => {
     const res = await fetch(`${BASE_URL}/apply-tuitions`, {
         method: "POST",
         headers: {
@@ -94,4 +94,16 @@ export const applyForTuition = async ( applicationData: IApplyTuition ) => {
     }
 
     return result;
+};
+
+export const getTuitionApplicationCount = async (tuitionId: string): Promise<{ count: number }> => {
+    const res = await fetch(`${BASE_URL}/tutions/${tuitionId}/applications/count`, {
+        cache: "no-store"
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to get application count");
+    }
+
+    return res.json();
 };
