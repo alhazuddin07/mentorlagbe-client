@@ -3,7 +3,9 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export const getUser = async () => {
-    const res = await fetch(`${BASE_URL}/users`);
+    const res = await fetch(`${BASE_URL}/users`, {
+        cache: "no-cache"
+    });
     return res.json();
 }
 

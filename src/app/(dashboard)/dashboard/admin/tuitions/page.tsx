@@ -18,7 +18,6 @@ import {
 
 import TuitionActions from "@/components/dashboard/admin/TuitionActions";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { getTuitions } from "@/lib/api/tuitions/tuitions-api";
 import { ITuition } from "@/types/tuitions/tuitions";
 import Image from "next/image";

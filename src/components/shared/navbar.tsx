@@ -91,15 +91,17 @@ export default function Navbar() {
                 aria-haspopup="menu"
                 aria-label="Open profile menu"
                 onClick={() => setProfileOpen((open) => !open)}
-                className="size-9 rounded-full"
+                className="size-9 rounded-full p-0"
               >
-                <Image
-                  src={user.image ?? "/avatar.svg"}
-                  alt={user.name}
-                  width={36}
-                  height={36}
-                  className="size-9 rounded-full"
-                />
+                <span className="relative block size-9 overflow-hidden rounded-full">
+                  <Image
+                    src={user.image || "/avatar.svg"}
+                    alt={user.name}
+                    fill
+                    sizes="36px"
+                    className="object-cover"
+                  />
+                </span>
               </Button>
 
               {/* Close on outside click */}

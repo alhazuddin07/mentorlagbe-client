@@ -1,10 +1,19 @@
-export default function TuitionsPage() {
+import { Suspense } from "react";
+import TuitionsContent from "@/components/dashboard/tutor/TuitionsContent";
+
+
+const BrowseTuitionsPage = () => {
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold tracking-tight">Browse Tuitions</h1>
-      <p className="mt-2 text-muted-foreground">
-        Find tuition posts that match your expertise.
-      </p>
-    </div>
+    <Suspense
+      fallback={
+        <div className="py-20 text-center">
+          Loading tuitions...
+        </div>
+      }
+    >
+      <TuitionsContent />
+    </Suspense>
   );
-}
+};
+
+export default BrowseTuitionsPage;

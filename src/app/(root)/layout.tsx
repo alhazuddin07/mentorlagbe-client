@@ -1,13 +1,18 @@
-import React from 'react';
+import { Suspense } from "react";
 import Navbar from "@/components/shared/navbar";
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+export default function RootLayout({
+    children,
+}: Readonly<{
+    children: React.ReactNode;
+}>) {
     return (
         <>
-            <Navbar />
+            <Suspense fallback={<div className="h-16" />}>
+                <Navbar />
+            </Suspense>
+
             {children}
         </>
     );
-};
-
-export default RootLayout;
+}
