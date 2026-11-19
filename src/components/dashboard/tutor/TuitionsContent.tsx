@@ -1,7 +1,3 @@
-import { BookOpen } from "lucide-react";
-import TuitionCard from "./TuitionCard";
-import SearchTuitions from "./SearchTuitions";
-import FilterTuitions from "./FilterTuitions";
 import { Badge } from "@/components/ui/badge";
 import { connection } from "next/server";
 import { ITuition } from "@/types/tuitions/tuitions";
@@ -37,7 +33,7 @@ const TuitionsContent = async () => {
                 </div>
 
                 <TuitionList tuitions={tuition} />
-                
+
             </div>
         </section>
     );
