@@ -9,7 +9,7 @@ export const getTuitions = async () => {
 
 export const getSingleTuition = async (id: string) => {
     const res = await fetch(`${BASE_URL}/tuition/${id}`,{
-        cache: "no-cache"
+        cache: "no-store"
     });
 
     const result = await res.json();

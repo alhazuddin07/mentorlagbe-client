@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { connection } from "next/server";
 import { ITuition } from "@/types/tuitions/tuitions";
 import { BrowseTuitions } from "@/lib/api/tuitions/tuitions-api";
+import TuitionList from "./TuitionList";
 
 
 const TuitionsContent = async () => {
@@ -35,43 +36,8 @@ const TuitionsContent = async () => {
                     </p>
                 </div>
 
-                <div className="flex justify-between">
-                    <SearchTuitions tuitions={tuition} />
-                    <FilterTuitions tuitions={tuition} />
-                </div>
-
-                <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">
-                        Available Tuitions
-                    </h2>
-
-                    <p className="text-sm text-muted-foreground">
-                        {tuition.length} Listings Found
-                    </p>
-                </div>
-
-                {tuition.length > 0 ? (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {tuition.map((item) => (
-                            <TuitionCard key={item._id} tuition={item} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed px-6 py-20 text-center">
-                        <div className="mb-4 rounded-full bg-muted p-4">
-                            <BookOpen className="size-10 text-muted-foreground" />
-                        </div>
-
-                        <h3 className="text-xl font-semibold">
-                            No Tuitions Available
-                        </h3>
-
-                        <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                            No approved tuition listings are available right now.
-                            Please check back later.
-                        </p>
-                    </div>
-                )}
+                <TuitionList tuitions={tuition} />
+                
             </div>
         </section>
     );
