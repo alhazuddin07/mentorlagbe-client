@@ -16,13 +16,15 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { ArrowRight, X } from "lucide-react";
-import { applyForTuition } from "@/lib/api/tuitions/tuitions-api";
+import { applyForTuition, getStudentApplicationCount } from "@/lib/api/tuitions/tuitions-api";
 import { ITuition } from "@/types/tuitions/tuitions";
 import { useClientUserSession } from "@/lib/client-side-sessions";
+import { useRouter } from "next/navigation";
 
 
 
 const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
+    const router = useRouter();
 
     const { data: session, isPending } = useClientUserSession();
     const user = session?.user;
@@ -33,7 +35,7 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
         return null;
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleApplyNow = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const form = e.currentTarget;
@@ -44,30 +46,45 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
         console.log("Current Tuition Title:", tuition.title);
 
         try {
-            const applicationData = {
-                tuitionId: tuition._id,
-                studentName: user?.name,
-                studentEmail: user?.email,
-                phone,
-                preferredSchedule: String(formData.get("preferredSchedule") || ""),
-                learningNote: String(formData.get("learningNote") || ""),
-                appliedDate: new Date(),
-                tuitionTitle: tuition.title,
-                classLavel: tuition.classLevel,
-                status: "Awaiting Decision",
 
-            };
+            console.log("Logged in User Email:", user?.email);
 
-            const result = await applyForTuition(applicationData);
+            const applicationCount = await getStudentApplicationCount(user?.email as string);
 
-            console.log(result);
+            console.log("Application Count:", applicationCount.count);
 
-            form.reset();
+            if (applicationCount.count >= 3) {
+                
+                router.push(`/payment`)
+                return;
+
+            } else {
+                const applicationData = {
+                    tuitionId: tuition._id,
+                    studentName: user?.name,
+                    studentEmail: user?.email,
+                    phone,
+                    preferredSchedule: String(formData.get("preferredSchedule") || ""),
+                    learningNote: String(formData.get("learningNote") || ""),
+                    appliedDate: new Date(),
+                    tuitionTitle: tuition.title,
+                    classLavel: tuition.classLevel,
+                    status: "Awaiting Decision",
+
+                };
+
+                const result = await applyForTuition(applicationData);
+
+                console.log(result);
+
+                form.reset();
+            }
 
         } catch (error) {
             console.error(error);
         }
     };
+
 
     return (
         <div>
@@ -99,7 +116,7 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
                                 Fill out the form below to apply for this tuition.
                             </PopoverDescription>
                         </PopoverHeader>
-                        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+                        <form onSubmit={handleApplyNow} className="mt-4 space-y-4">
                             {/* Phone Number */}
                             <div className="space-y-2">
                                 <Label htmlFor="phone">Phone Number</Label>

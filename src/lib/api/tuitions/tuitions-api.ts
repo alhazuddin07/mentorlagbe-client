@@ -107,3 +107,15 @@ export const getTuitionApplicationCount = async (tuitionId: string): Promise<{ c
 
     return res.json();
 };
+
+export const getStudentApplicationCount = async (email: string): Promise<{ count: number }> => {
+    const res = await fetch(`${BASE_URL}/applications/count/${encodeURIComponent(email)}`, {
+        cache: "no-store"
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to get application count");
+    }
+
+    return res.json();
+};
