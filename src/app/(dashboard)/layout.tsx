@@ -1,6 +1,5 @@
 export const instant = false;
 import { Suspense } from "react";
-import { getSession } from "@/lib/get-session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AppSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -11,9 +10,10 @@ import {
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { isUserRole, type UserRole } from "@/types/sidebar";
+import { getServerSession } from "@/lib/get-session";
 
 const DashboardContent = async ({ children }: { children: React.ReactNode }) => {
-    const session = await getSession();
+    const session = await getServerSession();
 
     if (!session || !session.user) {
         redirect("/sign-in");

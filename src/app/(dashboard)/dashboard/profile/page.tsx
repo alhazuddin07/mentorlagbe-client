@@ -2,13 +2,13 @@
 // an instant navigation.
 export const instant = false;
 
-import { getSession } from "@/lib/get-session";
+import { getServerSession } from "@/lib/get-session";
 import Image from "next/image";
 import { User, Mail, Shield, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardProfilePage() {
-    const session = await getSession();
+    const session = await getServerSession();
 
     const user = session?.user;
     const role = (user as { role?: string } | undefined)?.role ?? "student";

@@ -20,6 +20,7 @@ import { applyForTuition, getStudentApplicationCount } from "@/lib/api/tuitions/
 import { ITuition } from "@/types/tuitions/tuitions";
 import { useClientUserSession } from "@/lib/client-side-sessions";
 import { useRouter } from "next/navigation";
+import { getUserPremiumById } from "@/lib/api/users/users-api";
 
 
 
@@ -42,18 +43,19 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
         const formData = new FormData(form);
         const phone = String(formData.get("phone") || "");
 
-        console.log("Current Tuition ID:", tuition._id);
-        console.log("Current Tuition Title:", tuition.title);
+        if (!user?.id) return;
 
         try {
 
-            console.log("Logged in User Email:", user?.email);
+            const premiumResult = await getUserPremiumById(user.id);
+
+            console.log("ok", premiumResult);
 
             const applicationCount = await getStudentApplicationCount(user?.email as string);
 
             console.log("Application Count:", applicationCount.count);
 
-            if (applicationCount.count >= 3) {
+            if (!premiumResult.premium && applicationCount.count >= 3) {
                 
                 router.push(`/payment`)
                 return;
@@ -76,6 +78,10 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
                 const result = await applyForTuition(applicationData);
 
                 console.log(result);
+                if(result.insertedId){
+                    // toast here
+                    router.push('/tuitions')
+                }
 
                 form.reset();
             }

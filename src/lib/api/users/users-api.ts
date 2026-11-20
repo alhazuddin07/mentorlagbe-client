@@ -9,6 +9,11 @@ export const getUser = async () => {
     return res.json();
 }
 
+export const getUserPremiumById = async(userId: string) =>{
+    const res = await fetch(`${BASE_URL}/users/${userId}/premium`);
+    return res.json();
+};
+
 export const updateUserStatus = async ( userId: string, status: "active" | "inactive" ) => {
     const res = await fetch(`${BASE_URL}/users/${userId}/status`, {
         method: "PATCH",

@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { getSession } from "@/lib/get-session";
 import StudentDashboard from "@/components/dashboard/student/StudentDashboard";
 import TutorDashboard from "@/components/dashboard/tutor/TutorDashboard";
 import AdminDashboard from "@/components/dashboard/admin/AdminDashboard";
+import { getServerSession } from "@/lib/get-session";
 
 async function DashboardContent() {
-    const session = await getSession();
+    const session = await getServerSession();
 
     const user = session?.user;
     const role = (user as { role?: string } | undefined)?.role ?? "student";
