@@ -1,12 +1,25 @@
 
+import { Suspense } from "react";
+
 import HeroSection from "@/components/home/HeroSection";
 import LatestTuitions from "@/components/home/LatestTuitions";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div>
+    <>
       <HeroSection />
-      <LatestTuitions />
-    </div>
+
+      <Suspense
+        fallback={
+          <section className="bg-white px-5 py-16 text-center">
+            <p className="text-[#6426D9] font-semibold">
+              Loading latest tuitions...
+            </p>
+          </section>
+        }
+      >
+        <LatestTuitions />
+      </Suspense>
+    </>
   );
 }
