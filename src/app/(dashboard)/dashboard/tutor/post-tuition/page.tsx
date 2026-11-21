@@ -1,3 +1,6 @@
+// This page reads session data and user limits on the server, so allow blocking navigation.
+export const instant = false;
+
 import { redirect } from "next/navigation";
 import PostTuitionForm from "@/components/dashboard/PostTutionForm";
 import { getServerSession } from "@/lib/get-session";

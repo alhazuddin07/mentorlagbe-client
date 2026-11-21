@@ -3,10 +3,8 @@
 // block on the server instead.
 export const instant = false;
 
-import Link from "next/link";
 import {
     Users,
-    MessageCircle,
     CheckCircle2,
     XCircle,
     Clock,
@@ -16,7 +14,6 @@ import {
     BookOpen,
     Inbox,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getApplications } from "@/lib/api/students/applications";

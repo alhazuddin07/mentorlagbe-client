@@ -1,4 +1,7 @@
 
+// This page fetches uncached tuition data from the server, so allow blocking navigation.
+export const instant = false;
+
 import {
     ClipboardList,
     CheckCircle2,

@@ -29,7 +29,7 @@ const plans: Record<Audience, Plan[]> = {
             features: [
                 "Browse all tuition listings",
                 "Apply to up to 5 tuitions per month",
-                "Chat with tutors",
+                "Bookmark up to 5 tuitions",
                 "Standard support",
             ],
             cta: "Start for free",
@@ -43,6 +43,7 @@ const plans: Record<Audience, Plan[]> = {
             features: [
                 "Everything in Free",
                 "Unlimited tuition applications",
+                "Unlimited tuition bookmarks",
                 "Priority application review",
                 "Verified student badge",
                 "Priority support",

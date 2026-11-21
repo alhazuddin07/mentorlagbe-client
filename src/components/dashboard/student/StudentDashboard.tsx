@@ -2,92 +2,95 @@ import Link from "next/link";
 import {
     FileText,
     Search,
-    MessageCircle,
     Crown,
     CheckCircle2,
     Clock,
+    XCircle,
     BookOpen,
     ArrowRight,
     TrendingUp,
+    Inbox,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getStudentApplications } from "@/lib/api/students/applications";
+import { IApplication } from "@/types/applications";
 
 interface StudentDashboardProps {
     user: {
-        name: string;
-        email: string;
+        id?: string;
+        name?: string;
+        email?: string;
         image?: string | null;
+        role?: string | null;
+        plan?: string | null;
     };
 }
 
-export default function StudentDashboard({ user }: StudentDashboardProps) {
+export default async function StudentDashboard({ user }: StudentDashboardProps) {
+    const userEmail = user?.email?.toLowerCase() || "";
+    const myApplications: IApplication[] = userEmail
+        ? await getStudentApplications(userEmail)
+        : [];
+
+    const appliedCount = myApplications.length;
+    const pendingCount = myApplications.filter(
+        (a) => a.status === "Awaiting Decision"
+    ).length;
+    const acceptedCount = myApplications.filter(
+        (a) => a.status === "Accepted"
+    ).length;
+    const isPro = user?.plan === "pro" || user?.plan === "paid";
+
     const stats = [
         {
             title: "Applied Tuitions",
-            value: "2",
-            description: "1 pending review",
+            value: appliedCount.toString(),
+            description: `${pendingCount} pending review`,
             icon: FileText,
             color: "text-blue-600 bg-blue-500/10",
         },
         {
             title: "Connected Mentors",
-            value: "1",
-            description: "Mathematics",
+            value: acceptedCount.toString(),
+            description: `${acceptedCount} applications accepted`,
             icon: BookOpen,
             color: "text-emerald-600 bg-emerald-500/10",
         },
         {
-            title: "Unread Messages",
-            value: "3",
-            description: "From 2 tutors",
-            icon: MessageCircle,
-            color: "text-purple-600 bg-purple-500/10",
-        },
-        {
             title: "Current Plan",
-            value: "Free Tier",
-            description: "Up to 5 applications/mo",
+            value: isPro ? "Pro Plan" : "Free Tier",
+            description: isPro ? "Unlimited applications" : "Up to 3 applications/mo",
             icon: Crown,
             color: "text-amber-600 bg-amber-500/10",
         },
     ];
 
-    const recentApplications = [
-        {
-            id: "app-1",
-            subject: "HSC Higher Math (Calculus)",
-            tutor: "Engr. Tanvir Ahmed",
-            fee: "5,000 BDT/mo",
-            appliedDate: "Nov 17, 2026",
-            status: "pending",
-        },
-        {
-            id: "app-2",
-            subject: "SSC English & Grammar",
-            tutor: "Nusrat Jahan",
-            fee: "3,500 BDT/mo",
-            appliedDate: "Nov 14, 2026",
-            status: "accepted",
-        },
-    ];
+    const recentApplications = myApplications
+        .slice()
+        .sort(
+            (a, b) =>
+                new Date(b.appliedDate || 0).getTime() -
+                new Date(a.appliedDate || 0).getTime()
+        )
+        .slice(0, 5);
 
     return (
         <div className="space-y-8">
             {/* Welcome Banner */}
-            <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 sm:p-8">
+            <div className="rounded-2xl border border-primary/20 bg-linear-to-r from-primary/10 via-primary/5 to-transparent p-6 sm:p-8">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="flex items-center gap-2">
                             <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                                Welcome back, {user.name}! 👋
+                                Welcome back, {user?.name || "Student"}! 👋
                             </h1>
-                            <Badge variant="secondary" className="font-semibold text-primary">
-                                Student
+                            <Badge variant="secondary" className="font-semibold text-primary capitalize">
+                                {user?.role || "Student"}
                             </Badge>
                         </div>
                         <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-                            Track your tuition applications, chat with your mentors, and discover expert tutors.
+                            Track your tuition applications, monitor approvals, and connect with expert tutors.
                         </p>
                     </div>
 
@@ -109,7 +112,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
             </div>
 
             {/* Quick Stat Cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {stats.map((stat) => (
                     <div
                         key={stat.title}
@@ -142,7 +145,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                                 Recent Tuition Applications
                             </h2>
                             <p className="text-xs text-muted-foreground">
-                                Live status of your sent tuition requests
+                                Live status of your submitted tuition requests
                             </p>
                         </div>
                         <Link
@@ -153,59 +156,75 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                         </Link>
                     </div>
 
-                    <div className="divide-y divide-border">
-                        {recentApplications.map((app) => (
-                            <div
-                                key={app.id}
-                                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4"
-                            >
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <p className="font-semibold text-sm text-foreground">
-                                            {app.subject}
-                                        </p>
-                                        <Badge
-                                            variant={
-                                                app.status === "accepted"
-                                                    ? "success"
-                                                    : app.status === "pending"
-                                                    ? "warning"
-                                                    : "destructive"
-                                            }
-                                            className="text-[10px] capitalize"
-                                        >
-                                            {app.status === "accepted" ? (
-                                                <span className="flex items-center gap-1">
-                                                    <CheckCircle2 className="size-3" /> Accepted
-                                                </span>
-                                            ) : (
-                                                <span className="flex items-center gap-1">
-                                                    <Clock className="size-3" /> Pending Review
-                                                </span>
-                                            )}
-                                        </Badge>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Tutor: <span className="font-medium text-foreground">{app.tutor}</span> • Fee: {app.fee}
-                                    </p>
-                                </div>
-
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xs text-muted-foreground">
-                                        {app.appliedDate}
-                                    </span>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        nativeButton={false}
-                                        render={<Link href="/dashboard/messages" />}
-                                    >
-                                        Message
-                                    </Button>
-                                </div>
+                    {recentApplications.length === 0 ? (
+                        <div className="py-12 text-center space-y-3">
+                            <div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
+                                <Inbox className="size-6" />
                             </div>
-                        ))}
-                    </div>
+                            <p className="font-semibold text-sm">No applications submitted yet</p>
+                            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                                Explore available tuitions and submit your application to learn with top mentors.
+                            </p>
+                            <Button size="sm" nativeButton={false} render={<Link href="/tuitions" />}>
+                                <Search className="size-4" /> Browse Tuitions
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-border">
+                            {recentApplications.map((app) => (
+                                <div
+                                    key={app._id}
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4"
+                                >
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-semibold text-sm text-foreground">
+                                                {app.tuitionTitle}
+                                            </p>
+                                            <Badge
+                                                variant={
+                                                    app.status === "Accepted"
+                                                        ? "success"
+                                                        : app.status === "Awaiting Decision"
+                                                            ? "warning"
+                                                            : "destructive"
+                                                }
+                                                className="text-[10px] capitalize"
+                                            >
+                                                {app.status === "Accepted" ? (
+                                                    <span className="flex items-center gap-1">
+                                                        <CheckCircle2 className="size-3" /> Accepted
+                                                    </span>
+                                                ) : app.status === "Awaiting Decision" ? (
+                                                    <span className="flex items-center gap-1">
+                                                        <Clock className="size-3" /> Awaiting Decision
+                                                    </span>
+                                                ) : (
+                                                    <span className="flex items-center gap-1">
+                                                        <XCircle className="size-3" /> Declined
+                                                    </span>
+                                                )}
+                                            </Badge>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
+                                            Class: <span className="font-medium text-foreground">{app.classLavel}</span>
+                                            {app.preferredSchedule && ` • Schedule: ${app.preferredSchedule}`}
+                                        </p>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-xs text-muted-foreground">
+                                            {new Date(app.appliedDate).toLocaleDateString("en-US", {
+                                                month: "short",
+                                                day: "numeric",
+                                                year: "numeric",
+                                            })}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Right side helper card */}
@@ -217,7 +236,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                         </h2>
                     </div>
                     <p className="text-xs leading-relaxed text-muted-foreground">
-                        Be specific with your learning goals and schedule availability when sending messages to tutors. Pro mentors respond 3x faster!
+                        Be specific with your learning goals and preferred schedule when applying for tuitions. Clear notes help tutors respond faster!
                     </p>
 
                     <div className="rounded-lg bg-muted/60 p-4 space-y-2">
@@ -225,7 +244,7 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
                             Need priority application reviews?
                         </p>
                         <p className="text-[11px] text-muted-foreground">
-                            Unlock unlimited tutor contact, verified badge, and instant notifications.
+                            Unlock unlimited tuition applications, verified student badge, and priority support.
                         </p>
                         <Button
                             size="sm"
@@ -242,4 +261,3 @@ export default function StudentDashboard({ user }: StudentDashboardProps) {
         </div>
     );
 }
-

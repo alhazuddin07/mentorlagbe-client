@@ -4,98 +4,127 @@ import {
     ClipboardList,
     CreditCard,
     ShieldAlert,
-    Check,
-    X,
+    CheckCircle2,
     ArrowRight,
     TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getUser } from "@/lib/api/users/users-api";
+import { getTuitions } from "@/lib/api/tuitions/tuitions-api";
+import { getPayments } from "@/lib/api/actions/paymens";
+import TuitionActions from "@/components/dashboard/admin/TuitionActions";
+import { ITuition } from "@/types/tuitions/tuitions";
 
 interface AdminDashboardProps {
     user: {
-        name: string;
-        email: string;
+        id?: string;
+        name?: string;
+        email?: string;
         image?: string | null;
+        role?: string | null;
     };
 }
 
-export default function AdminDashboard({ user }: AdminDashboardProps) {
+interface UserRecord {
+    id: string;
+    name: string;
+    email: string;
+    role: "student" | "tutor" | "admin";
+    status?: string;
+    createdAt?: string;
+}
+
+interface PaymentRecord {
+    _id?: string;
+    amount?: number;
+    currency?: string;
+    paidAt?: string;
+    userName?: string;
+}
+
+export default async function AdminDashboard({ user }: AdminDashboardProps) {
+    const [allUsers, allTuitions, allPayments]: [
+        UserRecord[],
+        ITuition[],
+        PaymentRecord[]
+    ] = await Promise.all([getUser(), getTuitions(), getPayments()]);
+
+    const usersList = allUsers || [];
+    const tuitionsList = allTuitions || [];
+    const paymentsList = allPayments || [];
+
+    const studentsCount = usersList.filter((u) => u.role === "student").length;
+    const tutorsCount = usersList.filter((u) => u.role === "tutor").length;
+
+    const approvedCount = tuitionsList.filter(
+        (t) => t.approvalStatus === "approved"
+    ).length;
+    const pendingTuitions = tuitionsList.filter(
+        (t) => t.approvalStatus === "pending"
+    );
+
+    // Sum platform revenue from Stripe payments (amount in cents/poisha for Stripe, convert to BDT)
+    const totalRevenueBDT = paymentsList.reduce((sum, p) => {
+        const amt = Number(p.amount) || 0;
+        // Stripe usually records amounts in smallest currency unit (cents/poisha)
+        const inUnits = amt > 1000 ? Math.round(amt / 100) : amt;
+        return sum + inUnits;
+    }, 0);
+
     const stats = [
         {
             title: "Total Registered Users",
-            value: "148",
-            description: "96 students, 52 tutors",
+            value: usersList.length.toString(),
+            description: `${studentsCount} students, ${tutorsCount} tutors`,
             icon: Users,
             color: "text-blue-600 bg-blue-500/10",
         },
         {
             title: "Total Tuitions",
-            value: "84",
-            description: "78 approved, 6 pending",
+            value: tuitionsList.length.toString(),
+            description: `${approvedCount} approved, ${pendingTuitions.length} pending`,
             icon: ClipboardList,
             color: "text-emerald-600 bg-emerald-500/10",
         },
         {
             title: "Pending Approval",
-            value: "6",
+            value: pendingTuitions.length.toString(),
             description: "Requires administrator review",
             icon: ShieldAlert,
             color: "text-amber-600 bg-amber-500/10",
         },
         {
             title: "Platform Revenue",
-            value: "124,500 BDT",
-            description: "From subscription & fees",
+            value: `৳${totalRevenueBDT.toLocaleString()}`,
+            description: `${paymentsList.length} verified subscriptions`,
             icon: CreditCard,
             color: "text-purple-600 bg-purple-500/10",
         },
     ];
 
-    const pendingTuitions = [
-        {
-            id: "t-pending-1",
-            title: "Advanced Math & Physics for Admission",
-            tutor: "Dr. Farhan Chowdhury",
-            email: "farhan.c@example.com",
-            fee: "8,000 BDT/mo",
-            submitted: "2 hours ago",
-        },
-        {
-            id: "t-pending-2",
-            title: "Class 9-10 Biology & Chemistry Special",
-            tutor: "Sultana Razia",
-            email: "sultana.r@example.com",
-            fee: "4,500 BDT/mo",
-            submitted: "5 hours ago",
-        },
-    ];
+    const recentUsers = usersList
+        .slice()
+        .sort(
+            (a, b) =>
+                new Date(b.createdAt || 0).getTime() -
+                new Date(a.createdAt || 0).getTime()
+        )
+        .slice(0, 5);
 
-    const recentUsers = [
-        {
-            name: "Zubair Rahman",
-            email: "zubair@example.com",
-            role: "tutor",
-            joined: "Today",
-        },
-        {
-            name: "Ayesha Siddiqa",
-            email: "ayesha.s@example.com",
-            role: "student",
-            joined: "Yesterday",
-        },
-        {
-            name: "Mahmud Hasan",
-            email: "m.hasan@example.com",
-            role: "tutor",
-            joined: "Nov 16, 2026",
-        },
-    ];
+    const pendingQueue = pendingTuitions
+        .slice()
+        .sort(
+            (a, b) =>
+                new Date(b.createdAt || 0).getTime() -
+                new Date(a.createdAt || 0).getTime()
+        )
+        .slice(0, 5);
 
     return (
         <div className="space-y-8">
             {/* Welcome Banner */}
-            <div className="rounded-2xl border border-red-500/20 bg-gradient-to-r from-red-500/10 via-red-500/5 to-transparent p-6 sm:p-8">
+            <div className="rounded-2xl border border-red-500/20 bg-linear-to-r from-red-500/10 via-red-500/5 to-transparent p-6 sm:p-8">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="flex items-center gap-2">
@@ -107,7 +136,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                             </Badge>
                         </div>
                         <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-                            Logged in as {user.name} ({user.email}). Complete platform oversight, user management, and tuition approvals.
+                            Logged in as {user?.name || "Admin"} ({user?.email}). Platform oversight, user management, and tuition approvals.
                         </p>
                     </div>
 
@@ -165,7 +194,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                                 Tuitions Moderation Queue
                             </h2>
                             <p className="text-xs text-muted-foreground">
-                                New posts requiring admin approval before public listing
+                                Posts awaiting administrative review prior to public listing
                             </p>
                         </div>
                         <Link
@@ -176,37 +205,43 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                         </Link>
                     </div>
 
-                    <div className="divide-y divide-border">
-                        {pendingTuitions.map((item) => (
-                            <div
-                                key={item.id}
-                                className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4"
-                            >
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <p className="font-semibold text-sm text-foreground">
-                                            {item.title}
+                    {pendingQueue.length === 0 ? (
+                        <div className="py-12 text-center space-y-2">
+                            <CheckCircle2 className="size-8 text-emerald-500 mx-auto" />
+                            <p className="font-semibold text-sm">All caught up!</p>
+                            <p className="text-xs text-muted-foreground">
+                                No tuition posts are currently pending administrative review.
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-border">
+                            {pendingQueue.map((item) => (
+                                <div
+                                    key={item._id}
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4"
+                                >
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-semibold text-sm text-foreground">
+                                                {item.title}
+                                            </p>
+                                            <Badge variant="warning" className="text-[10px]">
+                                                Pending Review
+                                            </Badge>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
+                                            Tutor: <span className="font-medium text-foreground">{item.tutorName || "Tutor"}</span> {item.tutorEmail && `(${item.tutorEmail})`} • Fee: ৳{item.monthlyFee?.toLocaleString()}
+                                            {item.createdAt && ` • Submitted ${new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}
                                         </p>
-                                        <Badge variant="warning" className="text-[10px]">
-                                            Pending Review
-                                        </Badge>
                                     </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Tutor: <span className="font-medium text-foreground">{item.tutor}</span> ({item.email}) • Fee: {item.fee} • Submitted {item.submitted}
-                                    </p>
-                                </div>
 
-                                <div className="flex items-center gap-2">
-                                    <Button size="sm" variant="outline" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
-                                        <Check className="size-3.5" /> Approve
-                                    </Button>
-                                    <Button size="sm" variant="outline" className="text-rose-600 hover:text-rose-700 hover:bg-rose-50">
-                                        <X className="size-3.5" /> Reject
-                                    </Button>
+                                    <div className="flex items-center gap-2">
+                                        <TuitionActions tuitionId={item._id} />
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Recent Registrations */}
@@ -228,41 +263,58 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
                         </Link>
                     </div>
 
-                    <div className="divide-y divide-border">
-                        {recentUsers.map((u, i) => (
-                            <div key={i} className="flex items-center justify-between py-3">
-                                <div className="space-y-0.5">
-                                    <p className="text-xs font-semibold text-foreground">
-                                        {u.name}
-                                    </p>
-                                    <p className="text-[11px] text-muted-foreground">
-                                        {u.email}
-                                    </p>
+                    {recentUsers.length === 0 ? (
+                        <p className="py-4 text-center text-xs text-muted-foreground">
+                            No registered users yet.
+                        </p>
+                    ) : (
+                        <div className="divide-y divide-border">
+                            {recentUsers.map((u) => (
+                                <div key={u.id} className="flex items-center justify-between py-3">
+                                    <div className="space-y-0.5">
+                                        <p className="text-xs font-semibold text-foreground">
+                                            {u.name}
+                                        </p>
+                                        <p className="text-[11px] text-muted-foreground">
+                                            {u.email}
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-1">
+                                        <Badge
+                                            variant={
+                                                u.role === "admin"
+                                                    ? "destructive"
+                                                    : u.role === "tutor"
+                                                    ? "default"
+                                                    : "secondary"
+                                            }
+                                            className="text-[10px] capitalize"
+                                        >
+                                            {u.role}
+                                        </Badge>
+                                        <span className="text-[10px] text-muted-foreground">
+                                            {u.createdAt
+                                                ? new Date(u.createdAt).toLocaleDateString("en-US", {
+                                                      month: "short",
+                                                      day: "numeric",
+                                                  })
+                                                : "Active"}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-1">
-                                    <Badge
-                                        variant={u.role === "tutor" ? "default" : "secondary"}
-                                        className="text-[10px] capitalize"
-                                    >
-                                        {u.role}
-                                    </Badge>
-                                    <span className="text-[10px] text-muted-foreground">
-                                        {u.joined}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="rounded-lg bg-muted/60 p-4 space-y-1">
                         <div className="flex items-center gap-2">
                             <TrendingUp className="size-4 text-primary" />
                             <p className="text-xs font-semibold text-foreground">
-                                Platform Growth
+                                Platform Overview
                             </p>
                         </div>
                         <p className="text-[11px] text-muted-foreground">
-                            +24 new signups this week. Server health 100% operational.
+                            {usersList.length} total users across {tuitionsList.length} tuitions. Server operational.
                         </p>
                     </div>
                 </div>
@@ -270,4 +322,3 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
         </div>
     );
 }
-

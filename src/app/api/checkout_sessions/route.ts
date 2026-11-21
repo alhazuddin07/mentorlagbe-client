@@ -41,7 +41,7 @@ export async function POST() {
 
             success_url: `${origin}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
 
-            cancel_url: `${origin}/payment?canceled=true`,
+            cancel_url: `${origin}/payment/cancel`,
         });
 
         // 5. Redirect user to Stripe Checkout

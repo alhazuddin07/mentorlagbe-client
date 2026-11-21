@@ -7,3 +7,16 @@ export interface IUser {
     createdAt: string;
     tuitionsCount?: number;
 }
+
+
+export interface IUser2 {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+    role: "student" | "tutor" | "admin";
+    plan: "free" | "pro";
+    createdAt: string;
+    updatedAt: string;
+}

@@ -1,5 +1,6 @@
 export interface ITuition {
     _id: string;
+    tutorId?: string;
     title: string;
     subject: string;
     classLevel: string;

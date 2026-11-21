@@ -10,6 +10,8 @@ import {
 
 import { ITuition } from "@/types/tuitions/tuitions";
 import { getLatestTuitions } from "@/lib/api/tuitions/tuitions-api";
+import { Button } from "../ui/button";
+import BookmarkButton from "@/components/tuitions/BookmarkButton";
 
 
 interface TuitionCardProps {
@@ -18,7 +20,15 @@ interface TuitionCardProps {
 
 function TuitionCard({ tuition }: TuitionCardProps) {
   return (
-    <article className="group overflow-hidden rounded-2xl border border-[#EEE8FC] bg-white shadow-[0_6px_24px_rgba(91,61,245,0.07)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_14px_35px_rgba(91,61,245,0.15)]">
+    <article className="group relative overflow-hidden rounded-2xl border border-[#EEE8FC] bg-white shadow-[0_6px_24px_rgba(91,61,245,0.07)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_14px_35px_rgba(91,61,245,0.15)]">
+
+      {/* Bookmark Button */}
+      <div className="absolute right-3 top-3 z-20">
+        <BookmarkButton
+          tuitionId={tuition._id}
+          tuitionTitle={tuition.title}
+        />
+      </div>
 
       {/* Banner Image */}
       <Link
@@ -50,11 +60,9 @@ function TuitionCard({ tuition }: TuitionCardProps) {
       <div className="p-4">
 
         {/* Tuition Title */}
-        <Link href={`/tuitions/${tuition._id}`}>
-          <h3 className="truncate text-base font-bold text-[#1B1245] transition-colors hover:text-[#6426D9]">
-            {tuition.title}
-          </h3>
-        </Link>
+        <h3 className="truncate text-base font-bold text-[#1B1245] transition-colors hover:text-[#6426D9]">
+          {tuition.title}
+        </h3>
 
         {/* Tutor Information */}
         <div className="mt-2 flex items-center gap-2">
@@ -114,6 +122,16 @@ function TuitionCard({ tuition }: TuitionCardProps) {
             </span>
           </p>
         </div>
+
+        <Button
+          className={'w-full mt-3'}
+        >
+          <Link
+            href={`/tuitions/${tuition._id}`}
+          >
+            View Details
+          </Link>
+        </Button>
 
       </div>
     </article>

@@ -9,5 +9,5 @@ export interface IApplication {
     appliedDate: string;
     tuitionTitle: string;
     classLavel: string;
-    status: "Awaiting Decision" | "Accepted" | "Rejected";
+    status: "Awaiting Decision" | "Accepted" | "Rejected" | "Declined";
 }

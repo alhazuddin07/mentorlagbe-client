@@ -12,6 +12,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { ITuition } from "@/types/tuitions/tuitions";
+import BookmarkButton from "@/components/tuitions/BookmarkButton";
 
 interface TuitionCardProps {
     tuition: ITuition;
@@ -49,6 +50,12 @@ const TuitionCard = ({ tuition }: TuitionCardProps) => {
                 >
                     {tuition.classLevel}
                 </Badge>
+
+                <BookmarkButton
+                    tuitionId={tuition._id}
+                    tuitionTitle={tuition.title}
+                    className="absolute right-3 bottom-3 z-10"
+                />
             </div>
 
             {/* Card Content */}

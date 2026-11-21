@@ -214,7 +214,7 @@ export default function SignUpForm() {
                 </div>
 
                 <div className="space-y-1.5">
-                    <span className="block text-sm font-medium text-[#D6D6DC]">
+                    <span className="block text-sm font-medium text-[#17152B]">
                         Profile picture
                     </span>
                     <label

@@ -3,9 +3,22 @@ import { IApplyTuition, ITuition, ITuitionPost } from "@/types/tuitions/tuitions
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 
-export const getTuitions = async () => {
-    const res = await fetch(`${BASE_URL}/all-tuitions`);
-    return res.json();
+export const getTuitions = async (params?: { status?: string; tutorEmail?: string }) => {
+    try {
+        let url = `${BASE_URL}/all-tuitions`;
+        if (params?.status || params?.tutorEmail) {
+            const searchParams = new URLSearchParams();
+            if (params.status) searchParams.set("status", params.status);
+            if (params.tutorEmail) searchParams.set("tutorEmail", params.tutorEmail);
+            url = `${BASE_URL}/tutions?${searchParams.toString()}`;
+        }
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return [];
+        return res.json();
+    } catch (err) {
+        console.error("Failed to fetch tuitions:", err);
+        return [];
+    }
 };
 
 

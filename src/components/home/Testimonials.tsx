@@ -1,7 +1,6 @@
 
 import Image from "next/image";
-import { Star, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Star } from "lucide-react";
 
 const testimonials = [
     {

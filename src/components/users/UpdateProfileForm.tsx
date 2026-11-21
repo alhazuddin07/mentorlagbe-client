@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Camera, UserRound, Save } from "lucide-react";
+import { Camera, UserRound, Save, ArrowLeft } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type UserProps = {
     user: {
@@ -18,9 +19,6 @@ export const UpdateProfileForm = ({ user }: UserProps) => {
     const router = useRouter();
 
     const [name, setName] = useState(user.name || "");
-    const [image, setImage] = useState(
-        user.image || "/default-avatar.png"
-    );
     const [preview, setPreview] = useState(
         user.image || "/default-avatar.png"
     );
@@ -34,8 +32,7 @@ export const UpdateProfileForm = ({ user }: UserProps) => {
         const res = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`, {
             method: "POST",
             body: formData,
-        }
-        );
+        });
 
         const data = await res.json();
 
@@ -59,7 +56,7 @@ export const UpdateProfileForm = ({ user }: UserProps) => {
         e.preventDefault();
 
         try {
-            let imageUrl = image;
+            let imageUrl = user.image || "";
 
             if (imageFile) {
                 imageUrl = await uploadImage(imageFile);
@@ -186,6 +183,13 @@ export const UpdateProfileForm = ({ user }: UserProps) => {
                     </form>
                 </div>
             </div>
+            <Link
+                href={'/'}
+                className="hover:text-[#4d06e6] flex justify-center mt-8"
+            >
+                <ArrowLeft width={'18'}/>
+                Back to home
+            </Link>
         </div>
     );
 };

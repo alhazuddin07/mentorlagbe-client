@@ -1,3 +1,6 @@
+// This page fetches uncached user accounts from the server, so allow blocking navigation.
+export const instant = false;
+
 import { Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getUser } from "@/lib/api/users/users-api";

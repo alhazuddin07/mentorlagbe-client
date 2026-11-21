@@ -6,25 +6,33 @@ import { getServerSession } from "@/lib/get-session";
 import Image from "next/image";
 import { User, Mail, Shield, Crown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function DashboardProfilePage() {
     const session = await getServerSession();
 
     const user = session?.user;
     const role = (user as { role?: string } | undefined)?.role ?? "student";
-    const plan = (user as { plan?: string } | undefined)?.plan ?? "free";
 
     return (
         <div className="space-y-6 max-w-4xl">
-            <div>
-                <h1 className="text-2xl font-bold tracking-tight">Account Profile</h1>
-                <p className="text-sm text-muted-foreground">
-                    Your personal profile and account credentials.
-                </p>
+            <div className="flex justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">Account Profile</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Your personal profile and account credentials.
+                    </p>
+                </div>
+                <div>
+                    <Button>
+                        <Link href={'/profile'}>Update Profile</Link>
+                    </Button>
+                </div>
             </div>
 
             <div className="rounded-xl border bg-card shadow-xs overflow-hidden">
-                <div className="h-28 bg-gradient-to-r from-primary/20 via-primary/10 to-muted" />
+                <div className="h-28 bg-linear-to-r from-primary/20 via-primary/10 to-muted" />
 
                 <div className="px-6 pb-6 pt-0 relative">
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-12 mb-4">
@@ -43,8 +51,8 @@ export default async function DashboardProfilePage() {
                                     role === "admin"
                                         ? "destructive"
                                         : role === "tutor"
-                                        ? "default"
-                                        : "secondary"
+                                            ? "default"
+                                            : "secondary"
                                 }
                                 className="capitalize font-semibold text-xs px-3 py-1"
                             >
@@ -53,7 +61,7 @@ export default async function DashboardProfilePage() {
                             </Badge>
                             <Badge variant="outline" className="capitalize text-xs px-3 py-1">
                                 <Crown className="size-3 mr-1 text-amber-500" />
-                                {plan} Plan
+                                {(user?.plan === "pro" || user?.plan === "paid") ? "Pro Plan" : "Free Plan"}
                             </Badge>
                         </div>
                     </div>

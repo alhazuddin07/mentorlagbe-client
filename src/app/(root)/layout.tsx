@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Navbar from "@/components/shared/navbar";
+import Footer from "@/components/shared/Footer";
 
 export default function RootLayout({
     children,
@@ -13,6 +14,9 @@ export default function RootLayout({
             </Suspense>
 
             {children}
+
+            <Footer />
+
         </>
     );
 }
