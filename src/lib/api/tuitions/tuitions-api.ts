@@ -142,3 +142,37 @@ export const getStudentApplicationCount = async (email: string): Promise<{ count
 
     return res.json();
 };
+
+export async function getLatestTuitions(): Promise<ITuition[]> {
+    try {
+        const response = await fetch(`${BASE_URL}/all-tuitions`, {
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch tuitions");
+        }
+
+        const result = await response.json();
+
+        const tuitions: ITuition[] = Array.isArray(result)
+            ? result
+            : result.data || [];
+
+        return tuitions
+            .filter(
+                (tuition) =>
+                    tuition.approvalStatus === "approved" &&
+                    tuition.isActive === true
+            )
+            .sort(
+                (a, b) =>
+                    new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime()
+            )
+            .slice(0, 4);
+    } catch (error) {
+        console.error("Latest tuitions error:", error);
+        return [];
+    }
+}
