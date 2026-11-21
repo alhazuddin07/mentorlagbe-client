@@ -49,11 +49,7 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
 
             const premiumResult = await getUserPremiumById(user.id);
 
-            console.log("ok", premiumResult);
-
             const applicationCount = await getStudentApplicationCount(user?.email as string);
-
-            console.log("Application Count:", applicationCount.count);
 
             if (!premiumResult.premium && applicationCount.count >= 3) {
                 
