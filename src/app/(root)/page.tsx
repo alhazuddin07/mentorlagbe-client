@@ -3,6 +3,10 @@ import { Suspense } from "react";
 
 import HeroSection from "@/components/home/HeroSection";
 import LatestTuitions from "@/components/home/LatestTuitions";
+import HowItWorks from "@/components/home/HowItWorks";
+import PricingPage from "./pricing/page";
+import Testimonials from "@/components/home/Testimonials";
+import FAQSection from "@/components/home/FAQSection";
 
 export default function HomePage() {
   return (
@@ -20,6 +24,12 @@ export default function HomePage() {
       >
         <LatestTuitions />
       </Suspense>
+
+      <HowItWorks />
+      <PricingPage />
+      <Testimonials />
+      <FAQSection />
+
     </>
   );
 }

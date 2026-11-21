@@ -29,7 +29,7 @@ const publicNavItems = [
   { label: "Home", href: "/" },
   { label: "Browse Tuitions", href: "/tuitions" },
   { label: "Pricing", href: "/pricing" },
-  { label: "How It Works", href: "/about" },
+  { label: "About", href: "/about" },
 ] as const;
 
 export default function Navbar() {
