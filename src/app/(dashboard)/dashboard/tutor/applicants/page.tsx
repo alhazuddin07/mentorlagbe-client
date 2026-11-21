@@ -168,54 +168,12 @@ export default async function TutorApplicantsPage() {
                                         </div>
                                     </div>
 
-                                    {/* Actions */}
-                                    {/* <div className="flex shrink-0 flex-wrap gap-2 md:w-36 md:flex-col">
-                                        {item.status === "Awaiting Decision" && (
-                                            <>
-                                                <Button
-                                                    size="sm"
-                                                    className="flex-1 bg-linear-to-r from-indigo-600 to-violet-600 text-white hover:bg-emerald-700 md:flex-none"
-                                                >
-                                                    <Check className="size-3.5" /> Accept
-                                                </Button>
-
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="flex-1 text-rose-600 hover:bg-rose-50 hover:text-rose-700 md:flex-none"
-                                                >
-                                                    <X className="size-3.5" /> Decline
-                                                </Button>
-                                            </>
-                                        )}
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex-1 md:flex-none"
-                                            nativeButton={false}
-                                            render={<Link href="/dashboard/messages" />}
-                                        >
-                                            <MessageCircle className="size-3.5" /> Message
-                                        </Button>
-                                    </div> */}
-
                                     <div className="flex shrink-0 flex-wrap gap-2 md:w-36 md:flex-col">
 
                                         <UpdateApplicationStatus
                                             applicationId={item._id!}
                                             status={item.status === "Rejected" ? "Declined" : item.status}
                                         />
-
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex-1 md:flex-none"
-                                            nativeButton={false}
-                                            render={<Link href="/dashboard/messages" />}
-                                        >
-                                            <MessageCircle className="size-3.5" />
-                                            Message
-                                        </Button>
 
                                     </div>
 

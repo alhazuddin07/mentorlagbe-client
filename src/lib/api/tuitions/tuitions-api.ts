@@ -40,6 +40,10 @@ export const BrowseTuitions = async () => {
     return res.json();
 };
 
+export class TuitionPaymentRequiredError extends Error {
+    requiresPayment = true;
+}
+
 export const createTuition = async (tuitionData: ITuitionPost) => {
     const res = await fetch(`${BASE_URL}/tutions`, {
         method: "POST",
@@ -53,10 +57,29 @@ export const createTuition = async (tuitionData: ITuitionPost) => {
     const result = await res.json();
 
     if (!res.ok) {
+        // The backend blocks free tutors once their post limit is reached.
+        if (result.requiresPayment) {
+            throw new TuitionPaymentRequiredError(
+                result.message || "Upgrade to Pro to post more tuitions."
+            );
+        }
+
         throw new Error(result.message || "Failed to create tuition.");
     }
 
     return result;
+};
+
+export const getTutorTuitionCount = async (tutorId: string): Promise<{ count: number }> => {
+    const res = await fetch(`${BASE_URL}/tuitions/count/${encodeURIComponent(tutorId)}`, {
+        cache: "no-store"
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to get tuition count");
+    }
+
+    return res.json();
 };
 
 export const updateTuitionStatus = async (tuitionId: string, approvalStatus: "approved" | "rejected") => {

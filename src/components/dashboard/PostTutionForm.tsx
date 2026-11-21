@@ -13,7 +13,7 @@ import { imgbbApiURL } from "@/lib/imageBB";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "../ui/toast";
 import { useRouter } from "next/navigation";
-import { createTuition } from "@/lib/api/tuitions/tuitions-api";
+import { createTuition, TuitionPaymentRequiredError } from "@/lib/api/tuitions/tuitions-api";
 
 export default function PostTuitionForm() {
     const [mode, setMode] = useState<"online" | "offline">("online");
@@ -141,6 +141,17 @@ export default function PostTuitionForm() {
 
         } catch (error) {
             console.error("Tuition submission error:", error);
+
+            // Backend denied the post: the free post limit is reached.
+            if (error instanceof TuitionPaymentRequiredError) {
+                toast.add({
+                    title: "Upgrade to Pro",
+                    description: error.message
+                });
+
+                router.push("/payment");
+                return;
+            }
 
             setError(
                 error instanceof Error
