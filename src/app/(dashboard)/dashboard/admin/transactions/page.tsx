@@ -46,8 +46,8 @@ export default async function AdminTransactionsPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold tracking-tight">Platform Transactions</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Platform Transactions</h1>
+                <p className="mt-1 text-sm sm:text-base text-muted-foreground leading-relaxed">
                     Real-time record of platform subscription payments, tuition upgrades, and Stripe checkout transactions.
                 </p>
             </div>
@@ -56,16 +56,16 @@ export default async function AdminTransactionsPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-xl border bg-card p-5 shadow-xs">
                     <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-xs font-medium uppercase tracking-wider">Total Revenue</span>
+                        <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider">Total Revenue</span>
                         <div className="rounded-lg bg-primary/10 p-2 text-primary">
                             <DollarSign className="size-4" />
                         </div>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold tracking-tight">
+                        <div className="text-2xl sm:text-3xl font-bold tracking-tight">
                             ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
-                        <p className="mt-1 flex items-center text-xs text-emerald-600">
+                        <p className="mt-1 flex items-center text-xs sm:text-sm font-medium text-emerald-600">
                             <ArrowUpRight className="mr-0.5 size-3.5" />
                             From verified Stripe payments
                         </p>
@@ -74,40 +74,40 @@ export default async function AdminTransactionsPage() {
 
                 <div className="rounded-xl border bg-card p-5 shadow-xs">
                     <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-xs font-medium uppercase tracking-wider">Total Transactions</span>
+                        <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider">Total Transactions</span>
                         <div className="rounded-lg bg-blue-500/10 p-2 text-blue-600">
                             <CreditCard className="size-4" />
                         </div>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold tracking-tight">{payments.length}</div>
-                        <p className="mt-1 text-xs text-muted-foreground">All-time processed payments</p>
+                        <div className="text-2xl sm:text-3xl font-bold tracking-tight">{payments.length}</div>
+                        <p className="mt-1 text-xs sm:text-sm text-muted-foreground">All-time processed payments</p>
                     </div>
                 </div>
 
                 <div className="rounded-xl border bg-card p-5 shadow-xs">
                     <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-xs font-medium uppercase tracking-wider">Pro Upgrades</span>
+                        <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider">Pro Upgrades</span>
                         <div className="rounded-lg bg-purple-500/10 p-2 text-purple-600">
                             <TrendingUp className="size-4" />
                         </div>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold tracking-tight">{proUsersCount}</div>
-                        <p className="mt-1 text-xs text-muted-foreground">Pro plan subscribers</p>
+                        <div className="text-2xl sm:text-3xl font-bold tracking-tight">{proUsersCount}</div>
+                        <p className="mt-1 text-xs sm:text-sm text-muted-foreground">Pro plan subscribers</p>
                     </div>
                 </div>
 
                 <div className="rounded-xl border bg-card p-5 shadow-xs">
                     <div className="flex items-center justify-between text-muted-foreground">
-                        <span className="text-xs font-medium uppercase tracking-wider">Payment Gateway</span>
+                        <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider">Payment Gateway</span>
                         <div className="rounded-lg bg-emerald-500/10 p-2 text-emerald-600">
                             <ShieldCheck className="size-4" />
                         </div>
                     </div>
                     <div className="mt-3">
-                        <div className="text-2xl font-bold tracking-tight">Stripe</div>
-                        <p className="mt-1 flex items-center text-xs text-emerald-600">
+                        <div className="text-2xl sm:text-3xl font-bold tracking-tight">Stripe</div>
+                        <p className="mt-1 flex items-center text-xs sm:text-sm font-medium text-emerald-600">
                             <span className="mr-1 inline-block size-2 rounded-full bg-emerald-500" />
                             Secure & Active
                         </p>
@@ -120,9 +120,9 @@ export default async function AdminTransactionsPage() {
                 <div className="border-b px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <CreditCard className="size-5 text-primary" />
-                        <span className="font-semibold text-sm">Payment History</span>
+                        <span className="font-semibold text-sm sm:text-base">Payment History</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs sm:text-sm text-muted-foreground">
                         Total {payments.length} {payments.length === 1 ? "Transaction" : "Transactions"}
                     </span>
                 </div>
@@ -132,15 +132,15 @@ export default async function AdminTransactionsPage() {
                         <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted">
                             <CreditCard className="size-6 text-muted-foreground" />
                         </div>
-                        <h3 className="font-semibold text-base">No transactions yet</h3>
-                        <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                        <h3 className="font-semibold text-base sm:text-lg">No transactions yet</h3>
+                        <p className="text-sm sm:text-base text-muted-foreground max-w-sm mx-auto leading-relaxed">
                             When users upgrade to Pro plans via Stripe Checkout, the payment records will appear here in real time.
                         </p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-muted/50 border-b text-xs font-semibold uppercase text-muted-foreground">
+                            <thead className="bg-muted/50 border-b text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 <tr>
                                     <th className="px-6 py-3.5">Transaction ID</th>
                                     <th className="px-6 py-3.5">User</th>
@@ -162,34 +162,34 @@ export default async function AdminTransactionsPage() {
                                                 {txnDisplay}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="font-medium text-foreground flex items-center gap-1.5">
+                                                <div className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                                                     <span>{tx.userName || "Customer"}</span>
                                                     {tx.userRole && (
-                                                        <Badge variant="outline" className="text-[10px] py-0 px-1.5 capitalize font-normal">
+                                                        <Badge variant="outline" className="text-xs py-0.5 px-2 capitalize font-medium">
                                                             {tx.userRole}
                                                         </Badge>
                                                     )}
                                                 </div>
                                                 <div className="text-xs text-muted-foreground">{tx.userEmail}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-xs font-medium text-foreground">
+                                            <td className="px-6 py-4 text-xs sm:text-sm font-medium text-foreground">
                                                 {tx.planName || "MentorLagbe Pro Plan"}
                                             </td>
-                                            <td className="px-6 py-4 font-semibold text-foreground">
+                                            <td className="px-6 py-4 text-sm sm:text-base font-bold text-foreground">
                                                 {formatAmount(tx.amount, tx.currency)}
                                             </td>
-                                            <td className="px-6 py-4 text-xs">
+                                            <td className="px-6 py-4 text-xs sm:text-sm">
                                                 <span className="inline-flex items-center gap-1 font-medium text-muted-foreground">
                                                     <span className="inline-block size-1.5 rounded-full bg-indigo-500" />
                                                     Stripe
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <Badge variant="success" className="text-xs capitalize">
+                                                <Badge variant="success" className="text-xs font-semibold capitalize">
                                                     {statusDisplay}
                                                 </Badge>
                                             </td>
-                                            <td className="px-6 py-4 text-xs text-muted-foreground text-right">
+                                            <td className="px-6 py-4 text-xs sm:text-sm text-muted-foreground text-right">
                                                 {formatDate(tx.paidAt)}
                                             </td>
                                         </tr>

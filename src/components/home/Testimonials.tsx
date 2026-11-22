@@ -34,20 +34,18 @@ const testimonials = [
 
 export default function Testimonials() {
     return (
-        <section className="bg-[#FBF9FF] px-5 py-14 md:px-8 lg:py-16">
+        <section className="w-full bg-white px-5 py-14 md:px-8 lg:py-16">
             <div className="mx-auto max-w-7xl">
 
                 {/* Section Heading */}
                 <div className="mb-7 text-center">
-                    <div>
-                        <h2 className="text-2xl font-extrabold tracking-tight text-[#1B1245] sm:text-3xl">
-                            What Our Users Say
-                        </h2>
+                    <h2 className="text-2xl font-extrabold tracking-tight text-[#1B1245] sm:text-3xl lg:text-4xl">
+                        What Our Users Say
+                    </h2>
 
-                        <p className="mt-1 text-sm text-[#68617E]">
-                            Real stories. Real success.
-                        </p>
-                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-[#68617E] sm:text-base">
+                        Real stories. Real success.
+                    </p>
                 </div>
 
                 {/* Testimonial Cards */}
@@ -55,7 +53,7 @@ export default function Testimonials() {
                     {testimonials.map((testimonial) => (
                         <article
                             key={testimonial.id}
-                            className="flex items-start gap-4 rounded-2xl border border-[#EEE8FC] bg-white p-4 shadow-[0_5px_20px_rgba(91,61,245,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(91,61,245,0.12)] sm:p-5"
+                            className="flex items-start gap-4 rounded-2xl border border-[#EEE8FC] bg-white p-4 shadow-[0_5px_20px_rgba(91,61,245,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_10px_25px_rgba(91,61,245,0.12)] sm:p-5"
                         >
                             {/* User Avatar */}
                             <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-[#EEE5FF] bg-[#EEE5FF]">
@@ -70,17 +68,18 @@ export default function Testimonials() {
 
                             {/* Review Content */}
                             <div className="min-w-0 flex-1">
-                                <p className="text-sm leading-relaxed text-[#332957]">
+                                <p className="text-sm leading-relaxed text-[#332957] sm:text-base">
                                     “{testimonial.review}”
                                 </p>
 
                                 <div className="mt-3 flex flex-wrap items-end justify-between gap-2">
+                                    {/* User Information */}
                                     <div>
-                                        <h3 className="text-xs font-bold text-[#1B1245]">
+                                        <h3 className="text-sm font-semibold text-[#1B1245]">
                                             {testimonial.name}
                                         </h3>
 
-                                        <p className="mt-0.5 text-xs text-[#858098]">
+                                        <p className="mt-0.5 text-xs font-medium text-[#858098] sm:text-sm">
                                             {testimonial.role}
                                         </p>
                                     </div>

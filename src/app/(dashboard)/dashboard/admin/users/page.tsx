@@ -17,8 +17,8 @@ export default async function AdminUsersPage() {
         <div className="space-y-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Manage Users</h1>
-                    <p className="text-sm text-muted-foreground">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Manage Users</h1>
+                    <p className="mt-1 text-sm sm:text-base text-muted-foreground leading-relaxed">
                         View, monitor, and regulate platform members and roles.
                     </p>
                 </div>
@@ -28,16 +28,16 @@ export default async function AdminUsersPage() {
                 <div className="border-b px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Users className="size-5 text-primary" />
-                        <span className="font-semibold text-sm">Platform Members</span>
+                        <span className="font-semibold text-sm sm:text-base">Platform Members</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs sm:text-sm text-muted-foreground">
                         {users.length} Registered Accounts
                     </span>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-sm">
-                        <thead className="bg-muted/50 border-b text-xs font-semibold uppercase text-muted-foreground">
+                        <thead className="bg-muted/50 border-b text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                             <tr>
                                 <th className="px-6 py-3.5">User</th>
                                 <th className="px-6 py-3.5">Assigned Role</th>
@@ -51,7 +51,7 @@ export default async function AdminUsersPage() {
                             {users.map((u: IUser) => (
                                 <tr key={u.id} className="hover:bg-muted/30 transition-colors">
                                     <td className="px-6 py-4">
-                                        <div className="font-medium text-foreground">{u.name}</div>
+                                        <div className="text-sm font-semibold text-foreground">{u.name}</div>
                                         <div className="text-xs text-muted-foreground">{u.email}</div>
                                     </td>
                                     <td className="px-6 py-4">

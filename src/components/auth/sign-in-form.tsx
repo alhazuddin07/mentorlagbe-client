@@ -73,11 +73,11 @@ export default function SignInForm() {
 
             {/* Heading */}
             <div className="mb-7 text-center">
-                <h1 className="text-2xl font-bold tracking-tight text-[#17152B]">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#17152B]">
                     Welcome Back!
                 </h1>
 
-                <p className="mt-2 text-sm text-[#686579]">
+                <p className="mt-2 text-sm sm:text-base text-[#686579] leading-normal">
                     Sign in to continue your learning journey.
                 </p>
             </div>

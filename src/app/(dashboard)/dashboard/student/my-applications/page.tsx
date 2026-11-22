@@ -1,4 +1,3 @@
-// This page reads dynamic server data and session, so opt out of instant navigation prerender.
 export const instant = false;
 
 import Link from "next/link";
@@ -11,23 +10,30 @@ import {
     Inbox,
     CalendarDays,
     BookOpen,
+    Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getStudentApplications } from "@/lib/api/students/applications";
 import { getServerSession } from "@/lib/get-session";
 import { IApplication } from "@/types/applications";
+import DeleteApplicationButton from "@/components/dashboard/student/DeleteApplicationButton";
 
 export default async function StudentApplicationsPage() {
     const session = await getServerSession();
     const userEmail = session?.user?.email?.toLowerCase();
 
-    // Fetch applications matching the logged-in student's email from the backend
-    const applications: IApplication[] = userEmail
+    const response = userEmail
         ? await getStudentApplications(userEmail)
         : [];
 
-    const sortedApplications = applications.slice().sort(
+    const applications: IApplication[] = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+            ? response.data
+            : [];
+
+    const sortedApplications = [...applications].sort(
         (a, b) =>
             new Date(b.appliedDate || 0).getTime() -
             new Date(a.appliedDate || 0).getTime()
@@ -37,8 +43,8 @@ export default async function StudentApplicationsPage() {
         <div className="space-y-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">My Applications</h1>
-                    <p className="text-sm text-muted-foreground">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">My Applications</h1>
+                    <p className="mt-1 text-sm sm:text-base text-muted-foreground leading-relaxed">
                         Track and manage all your submitted tuition applications.
                     </p>
                 </div>
@@ -53,9 +59,9 @@ export default async function StudentApplicationsPage() {
                 <div className="border-b px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <FileText className="size-5 text-primary" />
-                        <span className="font-semibold text-sm">Submitted Applications</span>
+                        <span className="font-semibold text-sm sm:text-base">Submitted Applications</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs sm:text-sm text-muted-foreground">
                         Total {sortedApplications.length} {sortedApplications.length === 1 ? "application" : "applications"}
                     </span>
                 </div>
@@ -65,8 +71,8 @@ export default async function StudentApplicationsPage() {
                         <div className="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
                             <Inbox className="size-7" />
                         </div>
-                        <h3 className="font-semibold text-base">No applications yet</h3>
-                        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                        <h3 className="font-semibold text-base sm:text-lg">No applications yet</h3>
+                        <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
                             You haven&apos;t applied to any tuitions yet. Browse our active tuition listings to find the right mentor for you.
                         </p>
                         <div className="pt-2">
@@ -90,7 +96,7 @@ export default async function StudentApplicationsPage() {
                                 >
                                     <div className="space-y-3 flex-1 min-w-0">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <h3 className="font-semibold text-base text-foreground">
+                                            <h3 className="font-semibold text-base sm:text-lg text-foreground tracking-tight">
                                                 {app.tuitionTitle}
                                             </h3>
                                             <Badge
@@ -98,8 +104,8 @@ export default async function StudentApplicationsPage() {
                                                     isAccepted
                                                         ? "success"
                                                         : isPending
-                                                        ? "warning"
-                                                        : "destructive"
+                                                            ? "warning"
+                                                            : "destructive"
                                                 }
                                                 className="capitalize text-xs"
                                             >
@@ -153,14 +159,9 @@ export default async function StudentApplicationsPage() {
                                     </div>
 
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            nativeButton={false}
-                                            render={<Link href={`/tuitions/${app.tuitionId}`} />}
-                                        >
-                                            View Tuition Details
-                                        </Button>
+                                        <DeleteApplicationButton
+                                            applicationId={app._id!}
+                                        />
                                     </div>
                                 </div>
                             );

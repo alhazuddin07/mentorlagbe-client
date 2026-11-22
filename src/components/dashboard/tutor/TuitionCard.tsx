@@ -20,7 +20,6 @@ interface TuitionCardProps {
 
 const TuitionCard = ({ tuition }: TuitionCardProps) => {
     return (
-
         <div className="group flex h-full flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
 
             {/* Banner Image */}
@@ -40,13 +39,13 @@ const TuitionCard = ({ tuition }: TuitionCardProps) => {
                     </div>
                 )}
 
-                <Badge className="absolute left-3 top-3 capitalize">
+                <Badge className="absolute left-3 top-3 capitalize font-semibold text-xs">
                     {tuition.mode}
                 </Badge>
 
                 <Badge
                     variant="secondary"
-                    className="absolute right-3 top-3"
+                    className="absolute right-3 top-3 font-semibold text-xs"
                 >
                     {tuition.classLevel}
                 </Badge>
@@ -63,24 +62,24 @@ const TuitionCard = ({ tuition }: TuitionCardProps) => {
 
                 {/* Title and Subject */}
                 <div>
-                    <p className="mb-2 flex items-center gap-1.5 text-sm font-medium text-primary">
+                    <p className="mb-1.5 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary">
                         <GraduationCap className="size-4" />
                         {tuition.subject}
                     </p>
 
-                    <h3 className="line-clamp-1 text-xl font-bold transition-colors group-hover:text-primary">
+                    <h3 className="line-clamp-1 text-lg font-bold tracking-tight transition-colors group-hover:text-primary">
                         {tuition.title}
                     </h3>
                 </div>
 
                 {/* Tuition Information */}
-                <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+                <div className="mt-4 space-y-2.5 text-xs sm:text-sm text-muted-foreground">
 
                     <div className="flex items-center gap-2">
                         {tuition.mode === "online" ? (
-                            <Monitor className="size-4 text-primary" />
+                            <Monitor className="size-4 text-primary shrink-0" />
                         ) : (
-                            <Building2 className="size-4 text-primary" />
+                            <Building2 className="size-4 text-primary shrink-0" />
                         )}
 
                         <span className="capitalize">
@@ -90,7 +89,7 @@ const TuitionCard = ({ tuition }: TuitionCardProps) => {
 
                     {tuition.mode === "offline" && tuition.location && (
                         <div className="flex items-center gap-2">
-                            <MapPin className="size-4 text-primary" />
+                            <MapPin className="size-4 text-primary shrink-0" />
                             <span className="line-clamp-1">
                                 {tuition.location}
                             </span>
@@ -98,15 +97,15 @@ const TuitionCard = ({ tuition }: TuitionCardProps) => {
                     )}
 
                     <div className="flex items-center gap-2">
-                        <CalendarDays className="size-4 text-primary" />
+                        <CalendarDays className="size-4 text-primary shrink-0" />
                         <span>
                             {tuition.daysPerWeek} Days / Week
                         </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <BookOpen className="size-4 text-primary" />
-                        <span>
+                        <BookOpen className="size-4 text-primary shrink-0" />
+                        <span className="truncate">
                             Tutor: {tuition.tutorName || "Not provided"}
                         </span>
                     </div>
@@ -115,18 +114,18 @@ const TuitionCard = ({ tuition }: TuitionCardProps) => {
                 {/* Footer */}
                 <div className="mt-auto pt-5">
                     <div className="mb-4 flex items-center justify-between border-t pt-4">
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-xs sm:text-sm font-medium text-muted-foreground">
                             Monthly Fee
                         </span>
 
-                        <p className="text-xl font-bold text-primary">
+                        <p className="text-lg font-bold text-primary">
                             ৳{tuition.monthlyFee.toLocaleString()}
                         </p>
                     </div>
 
                     <Link
                         href={`/tuitions/${tuition._id}`}
-                        className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="inline-flex h-10 w-full items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     >
                         View Details
                         <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />

@@ -1,3 +1,4 @@
+import { authFetch } from "@/lib/get-session";
 import { IApplyTuition, ITuition, ITuitionPost } from "@/types/tuitions/tuitions";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -25,8 +26,7 @@ export const getTuitions = async (params?: { status?: string; tutorEmail?: strin
 export const getTuitionById = async (id: string): Promise<ITuition | null> => {
     const res = await fetch(`${BASE_URL}/tuitions/${id}`, {
         cache: "no-store",
-    }
-    );
+    });
 
     if (res.status === 404) {
         return null;
@@ -114,16 +114,19 @@ export const updateTuitionStatus = async (tuitionId: string, approvalStatus: "ap
     return result;
 };
 
+
 export const applyForTuition = async (applicationData: IApplyTuition) => {
     const res = await fetch(`${BASE_URL}/apply-tuitions`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(applicationData),
     });
 
     const result = await res.json();
+
+    if (result.duplicate) {
+        return result;
+    }
 
     if (!res.ok) {
         throw new Error(result.message || "Failed to apply for tuition.");
@@ -131,6 +134,7 @@ export const applyForTuition = async (applicationData: IApplyTuition) => {
 
     return result;
 };
+
 
 export const getTuitionApplicationCount = async (tuitionId: string): Promise<{ count: number }> => {
     const res = await fetch(`${BASE_URL}/tutions/${tuitionId}/applications/count`, {
@@ -146,15 +150,14 @@ export const getTuitionApplicationCount = async (tuitionId: string): Promise<{ c
 
 export async function getLatestTuitions(): Promise<ITuition[]> {
     try {
-        const response = await fetch(`${BASE_URL}/all-tuitions`, {
-            cache: "no-store",
-        });
+        const api = `${BASE_URL}/all-tuitions`
+        const response = await authFetch(api)
 
         if (!response.ok) {
             throw new Error("Failed to fetch tuitions");
         }
 
-        const result = await response.json();
+        const result = response.data;
 
         const tuitions: ITuition[] = Array.isArray(result)
             ? result

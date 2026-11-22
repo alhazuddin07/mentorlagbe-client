@@ -1,4 +1,5 @@
 export interface IApplication {
+    id?: string;
     _id?: string;
     tuitionId: string;
     tutorEmail?: string | null;

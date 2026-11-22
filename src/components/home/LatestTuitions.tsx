@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -51,7 +50,7 @@ function TuitionCard({ tuition }: TuitionCardProps) {
         )}
 
         {/* Subject Badge */}
-        <span className="absolute bottom-3 left-3 rounded-full bg-[#742CE5] px-3 py-1 text-xs font-bold text-white shadow-md">
+        <span className="absolute bottom-3 left-3 rounded-full bg-[#742CE5] px-3 py-1 text-xs font-semibold text-white shadow-md">
           {tuition.subject}
         </span>
       </Link>
@@ -60,7 +59,7 @@ function TuitionCard({ tuition }: TuitionCardProps) {
       <div className="p-4">
 
         {/* Tuition Title */}
-        <h3 className="truncate text-base font-bold text-[#1B1245] transition-colors hover:text-[#6426D9]">
+        <h3 className="truncate text-base font-semibold tracking-tight text-[#1B1245] transition-colors hover:text-[#6426D9]">
           {tuition.title}
         </h3>
 
@@ -81,7 +80,7 @@ function TuitionCard({ tuition }: TuitionCardProps) {
             </div>
           )}
 
-          <p className="truncate text-sm text-[#858098]">
+          <p className="truncate text-xs sm:text-sm font-medium text-[#858098]">
             by {tuition.tutorName || "MentorLagbe Tutor"}
           </p>
         </div>
@@ -98,24 +97,24 @@ function TuitionCard({ tuition }: TuitionCardProps) {
         </div>
 
         {/* Location */}
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-[#858098]">
+        <div className="mt-3 flex items-center gap-1.5 text-xs sm:text-sm text-[#858098]">
           <MapPin size={14} className="shrink-0 text-[#8050D9]" />
           <span className="truncate">{tuition.location}</span>
         </div>
 
         {/* Days Per Week */}
-        <div className="mt-2 flex items-center gap-1.5 text-xs text-[#858098]">
+        <div className="mt-2 flex items-center gap-1.5 text-xs sm:text-sm text-[#858098]">
           <CalendarDays size={14} className="text-[#8050D9]" />
           <span>{tuition.daysPerWeek} days / week</span>
         </div>
 
         {/* Monthly Fee */}
         <div className="mt-4 flex items-center justify-between border-t border-[#F0ECFA] pt-3">
-          <span className="text-xs text-[#858098]">
+          <span className="text-xs sm:text-sm font-medium text-[#858098]">
             Monthly Fee
           </span>
 
-          <p className="text-sm font-extrabold text-[#6426D9]">
+          <p className="text-sm sm:text-base font-bold text-[#6426D9]">
             ৳{tuition.monthlyFee?.toLocaleString("en-BD")}
             <span className="ml-1 text-xs font-medium text-[#858098]">
               / month
@@ -124,7 +123,7 @@ function TuitionCard({ tuition }: TuitionCardProps) {
         </div>
 
         <Button
-          className={'w-full mt-3'}
+          className={'w-full mt-3 font-semibold'}
         >
           <Link
             href={`/tuitions/${tuition._id}`}
@@ -142,6 +141,7 @@ function TuitionCard({ tuition }: TuitionCardProps) {
 
 export default async function LatestTuitions() {
   const tuitions = await getLatestTuitions();
+  console.log("worked", tuitions);
 
   return (
     <section className="bg-white px-5 py-16 md:px-8 lg:py-20">
@@ -149,15 +149,15 @@ export default async function LatestTuitions() {
 
         {/* Section Heading */}
         <div className="relative mb-10 text-center">
-          <span className="inline-flex items-center gap-2 text-sm font-bold text-[#6426D9]">
+          <span className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-wide text-[#6426D9]">
             🔥 Latest Tuitions
           </span>
 
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-[#1B1245] sm:text-4xl">
+          <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1B1245]">
             Explore the Best Tuitions
           </h2>
 
-          <p className="mt-2 text-sm text-[#68617E] sm:text-base">
+          <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#68617E]">
             Find perfect tutors for any subject, anytime!
           </p>
 
@@ -190,11 +190,11 @@ export default async function LatestTuitions() {
               size={42}
             />
 
-            <h3 className="mt-4 text-lg font-bold text-[#1B1245]">
+            <h3 className="mt-4 text-lg sm:text-xl font-bold tracking-tight text-[#1B1245]">
               No Tuitions Available Yet
             </h3>
 
-            <p className="mt-2 text-sm text-[#858098]">
+            <p className="mt-2 text-sm sm:text-base text-[#858098] leading-relaxed">
               New tuition opportunities will appear here soon.
             </p>
 

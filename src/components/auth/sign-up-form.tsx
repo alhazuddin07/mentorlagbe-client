@@ -146,11 +146,11 @@ export default function SignUpForm() {
                     <GraduationCap size={32} />
                 </div>
 
-                <h1 className="text-2xl font-bold tracking-tight text-[#17152B]">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#17152B]">
                     Create an Account
                 </h1>
 
-                <p className="mt-2 text-center text-sm text-[#686579]">
+                <p className="mt-2 text-center text-sm sm:text-base text-[#686579] leading-normal">
                     Join MentorLagbe and start your journey today.
                 </p>
             </div>

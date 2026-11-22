@@ -148,7 +148,7 @@ export function PricingPlans() {
                     <XCircle className="mt-0.5 size-5 shrink-0 text-destructive" />
                     <div>
                         <p className="text-sm font-semibold text-destructive">Payment Cancelled</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 leading-relaxed">
                             Your Stripe checkout session was cancelled. No charges were made. You can review the plans below and upgrade at any time.
                         </p>
                     </div>
@@ -180,7 +180,7 @@ export function PricingPlans() {
                             aria-selected={active}
                             onClick={() => setAudience(id)}
                             className={cn(
-                                "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                                "flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                                 active
                                     ? "bg-background text-foreground shadow-sm"
                                     : "text-muted-foreground hover:text-foreground"
@@ -203,37 +203,37 @@ export function PricingPlans() {
                         <div
                             key={`${audience}-${plan.name}`}
                             className={cn(
-                                "relative flex flex-col rounded-2xl border bg-card p-6 shadow-xs transition-shadow",
+                                "relative flex flex-col rounded-2xl border bg-card p-6 sm:p-7 shadow-xs transition-shadow",
                                 plan.highlighted &&
                                     "border-primary/40 shadow-lg shadow-primary/10 ring-1 ring-primary/25"
                             )}
                         >
                             {plan.highlighted && (
-                                <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                                <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground tracking-wide">
                                     <Sparkles className="size-3" />
                                     Recommended
                                 </span>
                             )}
 
                             <div className="flex items-center justify-between">
-                                <h2 className="text-lg font-semibold">{plan.name}</h2>
+                                <h2 className="text-xl font-bold tracking-tight">{plan.name}</h2>
                                 {isCurrentPlan && (
-                                    <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 border border-emerald-500/20">
+                                    <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 border border-emerald-500/20">
                                         Current Plan
                                     </span>
                                 )}
                             </div>
 
-                            <p className="mt-1 min-h-10 text-sm text-muted-foreground">
+                            <p className="mt-2 min-h-10 text-sm leading-relaxed text-muted-foreground">
                                 {plan.description}
                             </p>
 
-                            <div className="mt-6 flex items-baseline gap-1">
-                                <span className="text-4xl font-bold tracking-tight">
+                            <div className="mt-6 flex items-baseline gap-1.5">
+                                <span className="text-4xl font-extrabold tracking-tight">
                                     {plan.price}
                                 </span>
                                 {plan.period && (
-                                    <span className="text-sm text-muted-foreground">
+                                    <span className="text-sm font-medium text-muted-foreground">
                                         {plan.period}
                                     </span>
                                 )}
@@ -241,7 +241,7 @@ export function PricingPlans() {
 
                             <div className="my-6 border-t border-border" />
 
-                            <ul className="flex-1 space-y-3 text-sm">
+                            <ul className="flex-1 space-y-3 text-sm leading-relaxed">
                                 {plan.features.map((feature) => (
                                     <li key={feature} className="flex gap-2.5">
                                         <Check className="mt-0.5 size-4 shrink-0 text-primary" />
@@ -257,7 +257,7 @@ export function PricingPlans() {
                                     disabled={isPending || isCurrentPlan}
                                     variant={plan.highlighted ? "default" : "outline"}
                                     className={cn(
-                                        "mt-8 h-11 w-full justify-center font-semibold cursor-pointer",
+                                        "mt-8 h-11 w-full justify-center text-sm sm:text-base font-semibold cursor-pointer",
                                         plan.highlighted && "shadow-md shadow-primary/20"
                                     )}
                                 >
@@ -277,7 +277,7 @@ export function PricingPlans() {
                                     nativeButton={false}
                                     render={<Link href={user ? "/dashboard" : plan.href} />}
                                     variant="outline"
-                                    className="mt-8 h-11 w-full justify-center"
+                                    className="mt-8 h-11 w-full justify-center text-sm sm:text-base font-semibold"
                                 >
                                     {user ? "View Dashboard" : plan.cta}
                                 </Button>

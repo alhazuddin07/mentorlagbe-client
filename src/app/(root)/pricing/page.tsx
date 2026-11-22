@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { ShieldCheck } from "lucide-react";
 import { PricingPlans } from "@/components/payments/PricingPlans";
+import FeatureComparison from "@/components/dashboard/pricing/FeatureComparison";
 
 export const metadata = {
     title: "Pricing | MentorLagbe",
@@ -39,6 +40,11 @@ export default function PricingPage() {
                     Secure recurring subscription by Stripe · $10/mo for Students, $15/mo for Tutors · Cancel anytime
                 </p>
             </div>
+
+            <div className="mt-11">
+                <FeatureComparison />
+            </div>
+
         </div>
     );
 }

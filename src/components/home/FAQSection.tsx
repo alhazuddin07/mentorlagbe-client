@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -46,11 +45,11 @@ export default function FAQSection() {
           {/* Heading */}
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-extrabold tracking-tight text-[#1B1245] sm:text-3xl">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1B1245]">
                 Frequently Asked Questions
               </h2>
 
-              <p className="mt-1 text-sm text-[#68617E]">
+              <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#68617E]">
                 Find answers to common questions.
               </p>
             </div>
@@ -75,7 +74,7 @@ export default function FAQSection() {
                     aria-expanded={isOpen}
                     className="flex w-full items-center justify-between gap-4 px-4 py-3.5 text-left transition hover:bg-[#FBF9FF]"
                   >
-                    <span className="text-sm font-semibold text-[#1B1245]">
+                    <span className="text-sm sm:text-base font-semibold text-[#1B1245]">
                       {faq.question}
                     </span>
 
@@ -89,7 +88,7 @@ export default function FAQSection() {
 
                   {isOpen && (
                     <div className="px-4 pb-4">
-                      <p className="text-sm leading-relaxed text-[#68617E]">
+                      <p className="text-sm sm:text-base leading-relaxed text-[#68617E]">
                         {faq.answer}
                       </p>
                     </div>
@@ -113,17 +112,17 @@ export default function FAQSection() {
               <Trophy size={28} className="text-[#FFD45C]" />
             </div>
 
-            <h3 className="text-xl font-extrabold leading-snug sm:text-2xl">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold leading-snug">
               Ready to Start Your Learning Journey?
             </h3>
 
-            <p className="mt-3 text-xs leading-relaxed text-purple-100 sm:text-sm">
+            <p className="mt-3 text-sm sm:text-base leading-relaxed text-purple-100">
               Join thousands of learners and find the best tutor for you today!
             </p>
 
             <Link
               href="/sign-up"
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-bold text-[#6426D9] shadow-lg transition hover:-translate-y-0.5 hover:bg-purple-50"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#6426D9] shadow-lg transition hover:-translate-y-0.5 hover:bg-purple-50"
             >
               Get Started Free
               <ArrowRight size={15} />

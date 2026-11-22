@@ -3,8 +3,15 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { getServerSession } from "@/lib/get-session";
 
-export async function PaymentContent({ searchParams }: { searchParams: Promise<{ canceled?: string }>}) {
+export async function PaymentContent({ searchParams }: { searchParams: Promise<{ canceled?: string }> }) {
     const { canceled } = await searchParams;
+
+    if (canceled) {
+        console.log(
+            'Order canceled -- continue to shop around and check out when you\'re ready.'
+        )
+    }
+
     const session = await getServerSession();
     const userRole = (session?.user?.role || "student").toLowerCase();
     const isTutor = userRole === "tutor";

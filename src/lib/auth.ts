@@ -1,3 +1,4 @@
+
 import { betterAuth } from "better-auth";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { MongoClient } from "mongodb";
@@ -10,12 +11,12 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
+
     user: {
         additionalFields: {
             role: {
                 type: "string",
-                required: false,
-                defaultValue: "student",
+                required: true,
                 input: true,
             },
             plan: {
@@ -26,12 +27,22 @@ export const auth = betterAuth({
             },
         },
     },
+
     hooks: {
         before: createAuthMiddleware(async (ctx) => {
-            // `role` has to be an input field so sign-up can pick
-            // student/tutor, but it must never be changed afterwards.
-            // Otherwise any signed-in user could promote themselves to admin
-            // through `POST /api/auth/update-user`.
+            // Only student and tutor can register.
+            if (ctx.path === "/sign-up/email") {
+                const allowedRoles = ["student", "tutor"];
+                const role = ctx.body?.role;
+
+                if (!allowedRoles.includes(role)) {
+                    throw new APIError("BAD_REQUEST", {
+                        message: "Only student and tutor roles are allowed.",
+                    });
+                }
+            }
+
+            // Users cannot change their role after registration.
             if (ctx.path === "/update-user" && ctx.body?.role !== undefined) {
                 throw new APIError("BAD_REQUEST", {
                     message: "Role cannot be changed.",
@@ -39,34 +50,7 @@ export const auth = betterAuth({
             }
         }),
     },
-    databaseHooks: {
-        user: {
-            create: {
-                before: async (user) => {
-                    const allowedRoles = ["student", "tutor"];
-                    const role = allowedRoles.includes(user.role as string)
-                        ? user.role
-                        : "student";
-                    return {
-                        data: {
-                            ...user,
-                            role,
-                            plan: "free",
-                        },
-                    };
-                },
-                after: async (user) => {
-                    try {
-                        await db.collection("users").updateOne(
-                            { email: user.email },
-                            { $set: user },
-                            { upsert: true }
-                        );
-                    } catch {}
-                },
-            },
-        },
-    },
+
     database: mongodbAdapter(db, {
         client,
     }),

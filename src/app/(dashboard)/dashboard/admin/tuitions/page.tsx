@@ -82,21 +82,21 @@ export default async function AdminTuitionsPage() {
             {/* Header */}
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <div className="mb-2 flex items-center gap-2 text-sm font-medium text-primary">
+                    <div className="mb-2 flex items-center gap-2 text-xs sm:text-sm font-semibold text-primary">
                         <ClipboardList className="size-4" />
                         Tuition Management
                     </div>
 
-                    <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
                         Moderate Tuitions
                     </h1>
 
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p className="mt-1 text-sm sm:text-base text-muted-foreground leading-relaxed">
                         Review tuition submissions and manage their approval status.
                     </p>
                 </div>
 
-                <Badge variant="outline" className="w-fit rounded-full px-3 py-1">
+                <Badge variant="outline" className="w-fit rounded-full px-3 py-1 text-xs font-semibold">
                     {tuitions.length} Total Listings
                 </Badge>
             </div>
@@ -112,7 +112,7 @@ export default async function AdminTuitionsPage() {
                             className="rounded-xl border bg-card p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
                         >
                             <div className="flex items-center justify-between">
-                                <p className="text-sm font-medium text-muted-foreground">
+                                <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                                     {stat.title}
                                 </p>
 
@@ -121,7 +121,7 @@ export default async function AdminTuitionsPage() {
                                 </div>
                             </div>
 
-                            <h2 className="mt-4 text-3xl font-bold tracking-tight">
+                            <h2 className="mt-3 text-2xl sm:text-3xl font-bold tracking-tight">
                                 {stat.value}
                             </h2>
                         </div>
@@ -133,10 +133,10 @@ export default async function AdminTuitionsPage() {
             <div className="space-y-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h2 className="text-lg font-semibold">
+                        <h2 className="text-base sm:text-lg font-semibold tracking-tight">
                             All Platform Tuitions
                         </h2>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs sm:text-sm text-muted-foreground">
                             Manage and review all submitted tuition posts.
                         </p>
                     </div>

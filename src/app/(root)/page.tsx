@@ -7,6 +7,7 @@ import HowItWorks from "@/components/home/HowItWorks";
 import PricingPage from "./pricing/page";
 import Testimonials from "@/components/home/Testimonials";
 import FAQSection from "@/components/home/FAQSection";
+import LearningCTA from "@/components/home/LearningCTA";
 
 export default function HomePage() {
   return (
@@ -25,10 +26,15 @@ export default function HomePage() {
         <LatestTuitions />
       </Suspense>
 
-      <HowItWorks />
       <PricingPage />
+
+      <HowItWorks />
+
       <Testimonials />
+
       <FAQSection />
+
+      <LearningCTA />
 
     </>
   );

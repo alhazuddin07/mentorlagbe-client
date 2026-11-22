@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import {
     BriefcaseBusiness,
@@ -29,57 +30,108 @@ interface TutorDashboardProps {
     };
 }
 
+type ApiResponse<T> = {
+    data?: T[];
+    applications?: T[];
+};
+
 export default async function TutorDashboard({ user }: TutorDashboardProps) {
-    const userEmail = user?.email?.toLowerCase() || "";
+    const userEmail = user?.email?.toLowerCase().trim() || "";
     const userId = user?.id || "";
 
-    const [allTuitions, allApplications]: [ITuition[], IApplication[]] =
-        await Promise.all([getTuitions(), getApplications()]);
+    // Fetch tuitions and applications
+    const [allTuitions, allApplications] = await Promise.all([
+        getTuitions(),
+        getApplications(),
+    ]);
 
-    const myTuitions = (allTuitions || []).filter(
+    // Normalize tuition API response
+    const tuitionList: ITuition[] = Array.isArray(allTuitions)
+        ? allTuitions
+        : Array.isArray((allTuitions as ApiResponse<ITuition> | null)?.data)
+            ? (allTuitions as ApiResponse<ITuition>).data!
+            : [];
+
+    // Normalize applications API response
+    const applicationList: IApplication[] = Array.isArray(allApplications)
+        ? allApplications
+        : Array.isArray((allApplications as ApiResponse<IApplication> | null)?.data)
+            ? (allApplications as ApiResponse<IApplication>).data!
+            : Array.isArray((allApplications as ApiResponse<IApplication> | null)?.applications)
+                ? (allApplications as ApiResponse<IApplication>).applications!
+                : [];
+
+    // Get tutor's own tuitions
+    const myTuitions = tuitionList.filter(
         (t) =>
-            (t.tutorEmail && t.tutorEmail.toLowerCase() === userEmail) ||
+            (t.tutorEmail &&
+                t.tutorEmail.toLowerCase().trim() === userEmail) ||
             (userId && t.tutorId === userId)
     );
 
-    const myTuitionIds = new Set(myTuitions.map((t) => t._id?.toString()));
+    // Get tutor's tuition IDs and titles
+    const myTuitionIds = new Set(
+        myTuitions.map((t) => t._id?.toString())
+    );
+
     const myTuitionTitles = new Set(
         myTuitions.map((t) => t.title?.toLowerCase().trim())
     );
 
-    const tutorApplicants = (allApplications || []).filter(
+    // Get applications for this tutor's tuitions
+    const tutorApplicants = applicationList.filter(
         (app) =>
-            (app.tuitionId && myTuitionIds.has(app.tuitionId.toString())) ||
+            (app.tuitionId &&
+                myTuitionIds.has(app.tuitionId.toString())) ||
             (app.tuitionTitle &&
-                myTuitionTitles.has(app.tuitionTitle.toLowerCase().trim()))
+                myTuitionTitles.has(
+                    app.tuitionTitle.toLowerCase().trim()
+                ))
     );
 
+    // Calculate applicants count for each tuition
     const myTuitionsWithCounts = myTuitions.map((t) => {
+        const tuitionId = t._id?.toString();
+        const tuitionTitle = t.title?.toLowerCase().trim();
+
         const count = tutorApplicants.filter(
             (a) =>
-                a.tuitionId === t._id ||
-                a.tuitionTitle?.toLowerCase().trim() ===
-                    t.title?.toLowerCase().trim()
+                (a.tuitionId &&
+                    a.tuitionId.toString() === tuitionId) ||
+                (a.tuitionTitle &&
+                    a.tuitionTitle.toLowerCase().trim() === tuitionTitle)
         ).length;
+
         return { ...t, applicantsCount: count };
     });
 
+    // Tuition statistics
     const activeCount = myTuitions.filter(
         (t) => t.approvalStatus === "approved"
     ).length;
+
     const pendingCount = myTuitions.filter(
         (t) => t.approvalStatus === "pending"
     ).length;
+
+    // Applicant statistics
     const newApplicantsCount = tutorApplicants.filter(
-        (a) => a.status === "Awaiting Decision"
+        (a) =>
+            a.status?.toLowerCase() === "awaiting decision" ||
+            a.status?.toLowerCase() === "pending"
     ).length;
 
+    // Monthly estimated income
     const monthlyEstimated = myTuitions
         .filter((t) => t.approvalStatus === "approved")
-        .reduce((sum, t) => sum + (Number(t.monthlyFee) || 0), 0);
+        .reduce(
+            (sum, t) => sum + (Number(t.monthlyFee) || 0),
+            0
+        );
 
     const isPro = user?.plan === "pro" || user?.plan === "paid";
 
+    // Dashboard stats
     const stats = [
         {
             title: "Posted Tuitions",
@@ -113,6 +165,7 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
         },
     ];
 
+    // Recent applicants
     const recentApplicants = tutorApplicants
         .slice()
         .sort(
@@ -122,6 +175,7 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
         )
         .slice(0, 5);
 
+    // Recent tuitions
     const recentTuitions = myTuitionsWithCounts
         .slice()
         .sort(
@@ -178,17 +232,17 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
                         className="rounded-xl border bg-card p-5 shadow-xs transition hover:shadow-md"
                     >
                         <div className="flex items-center justify-between">
-                            <p className="text-xs font-medium text-muted-foreground">
+                            <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                                 {stat.title}
                             </p>
                             <div className={`flex size-9 items-center justify-center rounded-lg ${stat.color}`}>
                                 <stat.icon className="size-4" />
                             </div>
                         </div>
-                        <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                        <p className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                             {stat.value}
                         </p>
-                        <p className="mt-1 text-xs text-muted-foreground">
+                        <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
                             {stat.description}
                         </p>
                     </div>
@@ -200,16 +254,16 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
                 <div className="lg:col-span-2 rounded-xl border bg-card p-6 shadow-xs space-y-4">
                     <div className="flex items-center justify-between pb-4 border-b">
                         <div>
-                            <h2 className="text-base font-semibold text-foreground">
+                            <h2 className="text-base sm:text-lg font-semibold tracking-tight text-foreground">
                                 My Tuition Posts
                             </h2>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                                 Tuitions you have submitted on MentorLagbe
                             </p>
                         </div>
                         <Link
                             href="/dashboard/tutor/my-tuitions"
-                            className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                            className="flex items-center gap-1 text-xs sm:text-sm font-medium text-primary hover:underline"
                         >
                             Manage All <ArrowRight className="size-3" />
                         </Link>
@@ -241,7 +295,7 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
                                 >
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <p className="font-semibold text-sm text-foreground">
+                                            <p className="font-semibold text-sm sm:text-base text-foreground">
                                                 {item.title}
                                             </p>
                                             <Badge
@@ -249,10 +303,10 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
                                                     item.approvalStatus === "approved"
                                                         ? "success"
                                                         : item.approvalStatus === "pending"
-                                                        ? "warning"
-                                                        : "destructive"
+                                                            ? "warning"
+                                                            : "destructive"
                                                 }
-                                                className="text-[10px] capitalize"
+                                                className="text-xs font-semibold capitalize"
                                             >
                                                 {item.approvalStatus === "approved" ? (
                                                     <span className="flex items-center gap-1">
@@ -337,8 +391,8 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
                                                 applicant.status === "Accepted"
                                                     ? "success"
                                                     : applicant.status === "Awaiting Decision"
-                                                    ? "warning"
-                                                    : "destructive"
+                                                        ? "warning"
+                                                        : "destructive"
                                             }
                                             className="text-[10px]"
                                         >
@@ -350,10 +404,12 @@ export default async function TutorDashboard({ user }: TutorDashboardProps) {
                                     </p>
                                     <div className="flex items-center justify-between pt-1">
                                         <span className="text-[11px] text-muted-foreground">
-                                            {new Date(applicant.appliedDate).toLocaleDateString("en-US", {
-                                                month: "short",
-                                                day: "numeric",
-                                            })}
+                                            {applicant.appliedDate
+                                                ? new Date(applicant.appliedDate).toLocaleDateString("en-US", {
+                                                    month: "short",
+                                                    day: "numeric",
+                                                })
+                                                : "Date unavailable"}
                                         </span>
                                         <Button
                                             size="sm"

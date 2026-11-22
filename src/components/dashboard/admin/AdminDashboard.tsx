@@ -167,17 +167,17 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
                         className="rounded-xl border bg-card p-5 shadow-xs transition hover:shadow-md"
                     >
                         <div className="flex items-center justify-between">
-                            <p className="text-xs font-medium text-muted-foreground">
+                            <p className="text-xs sm:text-sm font-medium text-muted-foreground">
                                 {stat.title}
                             </p>
                             <div className={`flex size-9 items-center justify-center rounded-lg ${stat.color}`}>
                                 <stat.icon className="size-4" />
                             </div>
                         </div>
-                        <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                        <p className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
                             {stat.value}
                         </p>
-                        <p className="mt-1 text-xs text-muted-foreground">
+                        <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
                             {stat.description}
                         </p>
                     </div>
@@ -189,16 +189,16 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
                 <div className="lg:col-span-2 rounded-xl border bg-card p-6 shadow-xs space-y-4">
                     <div className="flex items-center justify-between pb-4 border-b">
                         <div>
-                            <h2 className="text-base font-semibold text-foreground">
+                            <h2 className="text-base sm:text-lg font-semibold tracking-tight text-foreground">
                                 Tuitions Moderation Queue
                             </h2>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                                 Posts awaiting administrative review prior to public listing
                             </p>
                         </div>
                         <Link
                             href="/dashboard/admin/tuitions"
-                            className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                            className="flex items-center gap-1 text-xs sm:text-sm font-medium text-primary hover:underline"
                         >
                             All Moderation <ArrowRight className="size-3" />
                         </Link>
@@ -221,14 +221,14 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
                                 >
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <p className="font-semibold text-sm text-foreground">
+                                            <p className="font-semibold text-sm sm:text-base text-foreground">
                                                 {item.title}
                                             </p>
-                                            <Badge variant="warning" className="text-[10px]">
+                                            <Badge variant="warning" className="text-xs font-semibold">
                                                 Pending Review
                                             </Badge>
                                         </div>
-                                        <p className="text-xs text-muted-foreground">
+                                        <p className="text-xs sm:text-sm text-muted-foreground">
                                             Tutor: <span className="font-medium text-foreground">{item.tutorName || "Tutor"}</span> {item.tutorEmail && `(${item.tutorEmail})`} • Fee: ৳{item.monthlyFee?.toLocaleString()}
                                             {item.createdAt && ` • Submitted ${new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}
                                         </p>
@@ -247,16 +247,16 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
                 <div className="rounded-xl border bg-card p-6 shadow-xs space-y-4">
                     <div className="flex items-center justify-between pb-4 border-b">
                         <div>
-                            <h2 className="text-base font-semibold text-foreground">
+                            <h2 className="text-base sm:text-lg font-semibold tracking-tight text-foreground">
                                 Recent Registrations
                             </h2>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                                 Latest members on MentorLagbe
                             </p>
                         </div>
                         <Link
                             href="/dashboard/admin/users"
-                            className="text-xs text-primary hover:underline"
+                            className="text-xs sm:text-sm text-primary hover:underline font-medium"
                         >
                             View All
                         </Link>
@@ -271,10 +271,10 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
                             {recentUsers.map((u) => (
                                 <div key={u.id} className="flex items-center justify-between py-3">
                                     <div className="space-y-0.5">
-                                        <p className="text-xs font-semibold text-foreground">
+                                        <p className="text-sm font-semibold text-foreground">
                                             {u.name}
                                         </p>
-                                        <p className="text-[11px] text-muted-foreground">
+                                        <p className="text-xs text-muted-foreground">
                                             {u.email}
                                         </p>
                                     </div>
@@ -287,11 +287,11 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
                                                     ? "default"
                                                     : "secondary"
                                             }
-                                            className="text-[10px] capitalize"
+                                            className="text-xs font-semibold capitalize"
                                         >
                                             {u.role}
                                         </Badge>
-                                        <span className="text-[10px] text-muted-foreground">
+                                        <span className="text-xs text-muted-foreground">
                                             {u.createdAt
                                                 ? new Date(u.createdAt).toLocaleDateString("en-US", {
                                                       month: "short",
@@ -308,11 +308,11 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
                     <div className="rounded-lg bg-muted/60 p-4 space-y-1">
                         <div className="flex items-center gap-2">
                             <TrendingUp className="size-4 text-primary" />
-                            <p className="text-xs font-semibold text-foreground">
+                            <p className="text-xs sm:text-sm font-semibold text-foreground">
                                 Platform Overview
                             </p>
                         </div>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                             {usersList.length} total users across {tuitionsList.length} tuitions. Server operational.
                         </p>
                     </div>

@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import {
   Search,
@@ -53,11 +52,11 @@ export default function HowItWorks() {
 
         {/* Section Heading */}
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight text-[#1B1245] sm:text-4xl">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1B1245]">
             How It Works?
           </h2>
 
-          <p className="mt-2 text-sm text-[#68617E] sm:text-base">
+          <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#68617E]">
             Getting started with MentorLagbe is simple!
           </p>
         </div>
@@ -83,7 +82,7 @@ export default function HowItWorks() {
 
             {/* For Students */}
             <div className="text-center md:border-r md:border-[#E6D9FF] md:pr-7">
-              <span className="inline-flex rounded-full bg-[#6426D9] px-5 py-2 text-sm font-bold text-white shadow-md shadow-purple-200">
+              <span className="inline-flex rounded-full bg-[#6426D9] px-5 py-2 text-sm font-semibold tracking-wide text-white shadow-md shadow-purple-200">
                 For Students
               </span>
 
@@ -107,7 +106,7 @@ export default function HowItWorks() {
                       </div>
 
                       {/* Step Title */}
-                      <h3 className="mt-3 text-xs font-bold text-[#1B1245] sm:text-sm">
+                      <h3 className="mt-3 text-xs sm:text-sm font-semibold text-[#1B1245] leading-snug">
                         {step.title}
                       </h3>
 
@@ -126,7 +125,7 @@ export default function HowItWorks() {
 
             {/* For Tutors */}
             <div className="text-center md:pl-7">
-              <span className="inline-flex rounded-full bg-[#6426D9] px-5 py-2 text-sm font-bold text-white shadow-md shadow-purple-200">
+              <span className="inline-flex rounded-full bg-[#6426D9] px-5 py-2 text-sm font-semibold tracking-wide text-white shadow-md shadow-purple-200">
                 For Tutors
               </span>
 
@@ -150,7 +149,7 @@ export default function HowItWorks() {
                       </div>
 
                       {/* Step Title */}
-                      <h3 className="mt-3 text-xs font-bold text-[#1B1245] sm:text-sm">
+                      <h3 className="mt-3 text-xs sm:text-sm font-semibold text-[#1B1245] leading-snug">
                         {step.title}
                       </h3>
 

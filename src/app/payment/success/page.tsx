@@ -1,7 +1,6 @@
 export const instant = false;
 
 import { checkoutVerify } from '@/lib/api/actions/paymens'
-import { stripe } from '@/lib/stripe'
 import { redirect } from 'next/navigation'
 import { connection } from 'next/server'
 import Link from 'next/link'
@@ -15,12 +14,10 @@ import {
     User,
     UserRound
 } from 'lucide-react'
+import { Button } from '@/components/ui/button';
+import { stripe } from '@/lib/stripe';
 
-export default async function Success({
-    searchParams
-}: {
-    searchParams: Promise<{ session_id?: string }>
-}) {
+export default async function Success({ searchParams }: { searchParams: Promise<{ session_id?: string }>}) {
     await connection()
 
     const { session_id } = await searchParams
@@ -30,8 +27,7 @@ export default async function Success({
     }
 
     // Check Stripe session
-    const { status, payment_status } =
-        await stripe.checkout.sessions.retrieve(session_id)
+    const { status, payment_status } = await stripe.checkout.sessions.retrieve(session_id)
 
     if (status === 'open') {
         return redirect('/')
@@ -230,12 +226,27 @@ export default async function Success({
                             : 'Thank you for your purchase! Your payment has been recorded successfully.'}
                     </p>
 
-                    <Link
-                        href="/tuitions"
-                        className="inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-700"
+                    <Button
+                        className={'w-full p-5'}
+                        nativeButton={false}
+                        render={
+                            <Link
+                                href={
+                                    payment.userRole === "student"
+                                        ? "/tuitions"
+                                        : payment.userRole === "tutor"
+                                            ? "/dashboard/tutor/post-tuition"
+                                            : "/"
+                                }
+                            />
+                        }
                     >
-                        Continue Applying
-                    </Link>
+                        {payment.userRole === "student"
+                            ? "Continue Apply more"
+                            : payment.userRole === "tutor"
+                                ? "Continue To Post Tuitions"
+                                : "Continue"}
+                    </Button>
                 </div>
             </div>
         </main>

@@ -182,7 +182,7 @@ export function AppSidebar({ initialRole, initialUser }: AppSidebarProps = {}) {
                       <span className="truncate text-sm font-semibold">
                         {user.name}
                       </span>
-                      <span className="inline-flex items-center rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary capitalize">
+                      <span className="inline-flex items-center rounded-md bg-primary/10 px-1.5 py-0.5 text-xs font-semibold text-primary capitalize">
                         {role}
                       </span>
                     </div>

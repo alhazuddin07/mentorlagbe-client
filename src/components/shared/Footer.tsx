@@ -39,7 +39,6 @@ const SocialIcon = ({ name }: { name: SocialName }) => {
 
     switch (name) {
         case "x":
-            // New X logo (replaces the old Twitter bird)
             return (
                 <svg {...common} fill="currentColor">
                     <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
@@ -105,7 +104,7 @@ const Footer = () => {
                             </span>
                         </Link>
 
-                        <p className="mt-5 max-w-sm text-sm leading-7 text-[#D8CFF5]">
+                        <p className="mt-5 max-w-sm text-sm sm:text-base leading-relaxed text-[#D8CFF5]">
                             Find a trusted tutor who fits your goals, your schedule and your
                             budget, and start learning with confidence.
                         </p>
@@ -130,14 +129,14 @@ const Footer = () => {
 
                     {/* Quick links */}
                     <nav aria-label="Footer navigation" className="lg:col-span-3">
-                        <h2 className="text-base font-bold">Quick links</h2>
+                        <h2 className="text-sm font-semibold tracking-wider uppercase text-white/90">Quick links</h2>
                         <div className="mt-2 h-0.5 w-10 rounded-full bg-[#8750E8]" />
                         <ul className="mt-5 space-y-3">
                             {QUICK_LINKS.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="group inline-flex items-center gap-2 text-sm text-[#D8CFF5] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C9B7FF]"
+                                        className="group inline-flex items-center gap-2 text-sm font-medium text-[#D8CFF5] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C9B7FF]"
                                     >
                                         <span className="h-1.5 w-1.5 rounded-full bg-[#8750E8] transition-all duration-300 group-hover:w-4" />
                                         {link.label}
@@ -149,7 +148,7 @@ const Footer = () => {
 
                     {/* Contact */}
                     <div className="lg:col-span-4">
-                        <h2 className="text-base font-bold">Get in touch</h2>
+                        <h2 className="text-sm font-semibold tracking-wider uppercase text-white/90">Get in touch</h2>
                         <div className="mt-2 h-0.5 w-10 rounded-full bg-[#8750E8]" />
                         <ul className="mt-5 space-y-4 text-sm text-[#D8CFF5]">
                             <li>
@@ -178,14 +177,14 @@ const Footer = () => {
                                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#C9B7FF]">
                                     <MapPin size={17} />
                                 </span>
-                                <span className="pt-2 leading-5">{CONTACT.address}</span>
+                                <span className="pt-2 leading-relaxed">{CONTACT.address}</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 {/* Bottom bar */}
-                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-center text-xs text-[#B9AEE0] sm:flex-row sm:text-left">
+                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-center text-xs sm:text-sm text-[#B9AEE0] sm:flex-row sm:text-left">
                     <p>© 2026 MentorLagbe. All rights reserved.</p>
                     <div className="flex items-center gap-5">
                         <Link href="/privacy" className="transition-colors hover:text-white">

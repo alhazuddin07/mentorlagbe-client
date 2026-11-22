@@ -28,6 +28,8 @@ const TuitionDetails = async ({ params }: Props) => {
         notFound();
     }
 
+    const serializedTuition = JSON.parse(JSON.stringify(tuition));
+
     return (
         <main className="min-h-screen bg-muted/40">
             <div className="container mx-auto max-w-6xl px-4 py-10">
@@ -41,7 +43,7 @@ const TuitionDetails = async ({ params }: Props) => {
                             fill
                             priority
                             className="object-cover"
-                             sizes="(max-width: 768px) 100vw, 50vw"
+                            sizes="(max-width: 768px) 100vw, 50vw"
                         />
                     ) : (
                         <div className="flex size-full items-center justify-center">
@@ -52,9 +54,10 @@ const TuitionDetails = async ({ params }: Props) => {
 
                     <div className="absolute bottom-0 left-0 p-6 sm:p-8">
                         <div className="mb-3 flex flex-wrap gap-2">
-                            <Badge variant="secondary">{tuition.subject}</Badge>
+                            <Badge variant="secondary" className="font-semibold text-xs">{tuition.subject}</Badge>
                             <Badge
                                 className={cn(
+                                    "font-semibold text-xs",
                                     tuition.mode === "online"
                                         ? "bg-green-100 text-green-700 border-green-200"
                                         : "bg-blue-100 text-blue-700 border-blue-200"
@@ -63,7 +66,7 @@ const TuitionDetails = async ({ params }: Props) => {
                                 {tuition.mode}
                             </Badge>
                         </div>
-                        <h1 className="text-2xl font-bold text-white sm:text-4xl">
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
                             {tuition.title}
                         </h1>
                     </div>
@@ -77,9 +80,9 @@ const TuitionDetails = async ({ params }: Props) => {
                         {/* Tuition Details */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Tuition Details</CardTitle>
+                                <CardTitle className="text-lg font-bold tracking-tight">Tuition Details</CardTitle>
                             </CardHeader>
-                            <CardContent className="p-4">
+                            <CardContent className="p-4 sm:p-6">
 
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                     {/* Subject */}
@@ -89,8 +92,8 @@ const TuitionDetails = async ({ params }: Props) => {
                                         </div>
 
                                         <div>
-                                            <p className="text-sm text-muted-foreground">Subject</p>
-                                            <p className="font-medium">{tuition.subject}</p>
+                                            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Subject</p>
+                                            <p className="text-sm sm:text-base font-semibold text-foreground">{tuition.subject}</p>
                                         </div>
                                     </div>
 
@@ -101,8 +104,8 @@ const TuitionDetails = async ({ params }: Props) => {
                                         </div>
 
                                         <div>
-                                            <p className="text-sm text-muted-foreground">Class Level</p>
-                                            <p className="font-medium">{tuition.classLevel}</p>
+                                            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Class Level</p>
+                                            <p className="text-sm sm:text-base font-semibold text-foreground">{tuition.classLevel}</p>
                                         </div>
                                     </div>
 
@@ -113,8 +116,8 @@ const TuitionDetails = async ({ params }: Props) => {
                                         </div>
 
                                         <div>
-                                            <p className="text-sm text-muted-foreground">Mode</p>
-                                            <p className="font-medium capitalize">{tuition.mode}</p>
+                                            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Mode</p>
+                                            <p className="text-sm sm:text-base font-semibold text-foreground capitalize">{tuition.mode}</p>
                                         </div>
                                     </div>
 
@@ -125,8 +128,8 @@ const TuitionDetails = async ({ params }: Props) => {
                                         </div>
 
                                         <div>
-                                            <p className="text-sm text-muted-foreground">Location</p>
-                                            <p className="font-medium">
+                                            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Location</p>
+                                            <p className="text-sm sm:text-base font-semibold text-foreground">
                                                 {tuition.location || "Not specified"}
                                             </p>
                                         </div>
@@ -139,8 +142,8 @@ const TuitionDetails = async ({ params }: Props) => {
                                         </div>
 
                                         <div>
-                                            <p className="text-sm text-muted-foreground">Days Per Week</p>
-                                            <p className="font-medium">
+                                            <p className="text-xs sm:text-sm font-medium text-muted-foreground">Days Per Week</p>
+                                            <p className="text-sm sm:text-base font-semibold text-foreground">
                                                 {tuition.daysPerWeek} days
                                             </p>
                                         </div>
@@ -152,10 +155,10 @@ const TuitionDetails = async ({ params }: Props) => {
                         {/* Description */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>About this Tuition</CardTitle>
+                                <CardTitle className="text-lg font-bold tracking-tight">About this Tuition</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="whitespace-pre-line leading-relaxed text-muted-foreground">
+                                <p className="whitespace-pre-line text-sm sm:text-base leading-relaxed text-muted-foreground">
                                     {tuition.description}
                                 </p>
                             </CardContent>
@@ -168,10 +171,10 @@ const TuitionDetails = async ({ params }: Props) => {
                         {/* Fee + CTA */}
                         <Card>
                             <CardContent className="pt-6">
-                                <p className="text-sm text-muted-foreground">Monthly Fee</p>
-                                <p className="mt-1 text-4xl font-bold">
+                                <p className="text-xs sm:text-sm font-medium text-muted-foreground">Monthly Fee</p>
+                                <p className="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight">
                                     ৳{tuition.monthlyFee}
-                                    <span className="text-base font-normal text-muted-foreground">
+                                    <span className="text-sm sm:text-base font-normal text-muted-foreground">
                                         {" "}/month
                                     </span>
                                 </p>
@@ -179,7 +182,7 @@ const TuitionDetails = async ({ params }: Props) => {
                                 <Separator className="my-5" />
 
                                 {/* apply for tuitions button */}
-                                <ApplyNow tuition={tuition} />
+                                <ApplyNow tuition={serializedTuition} />
 
                             </CardContent>
                         </Card>
@@ -187,7 +190,7 @@ const TuitionDetails = async ({ params }: Props) => {
                         {/* Tutor */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Your Tutor</CardTitle>
+                                <CardTitle className="text-lg font-bold tracking-tight">Your Tutor</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center gap-4">
@@ -202,10 +205,10 @@ const TuitionDetails = async ({ params }: Props) => {
                                     </Avatar>
 
                                     <div className="min-w-0">
-                                        <p className="truncate font-semibold">
+                                        <p className="truncate text-base font-semibold">
                                             {tuition.tutorName || "Not available"}
                                         </p>
-                                        <p className="truncate text-sm text-muted-foreground">
+                                        <p className="truncate text-xs sm:text-sm text-muted-foreground">
                                             {tuition.tutorEmail || "Not available"}
                                         </p>
                                     </div>

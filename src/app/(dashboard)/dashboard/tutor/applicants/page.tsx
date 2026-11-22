@@ -71,8 +71,8 @@ export default async function TutorApplicantsPage() {
         <div className="space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Student Applicants</h1>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Student Applicants</h1>
+                <p className="mt-1 text-sm sm:text-base text-muted-foreground leading-relaxed">
                     Review and communicate with students who applied for your tuition listings.
                 </p>
             </div>
@@ -88,8 +88,8 @@ export default async function TutorApplicantsPage() {
                             <Icon className="size-6" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold leading-none">{value}</p>
-                            <p className="mt-1 text-xs text-muted-foreground">{label}</p>
+                            <p className="text-2xl sm:text-3xl font-bold tracking-tight leading-none">{value}</p>
+                            <p className="mt-1 text-xs sm:text-sm font-medium text-muted-foreground">{label}</p>
                         </div>
                     </div>
                 ))}
@@ -99,7 +99,7 @@ export default async function TutorApplicantsPage() {
             <div className="space-y-4">
                 <div className="flex items-center gap-2">
                     <Users className="size-5 text-primary" />
-                    <h2 className="text-lg font-semibold">Applicant Requests</h2>
+                    <h2 className="text-base sm:text-lg font-semibold tracking-tight">Applicant Requests</h2>
                 </div>
 
                 {applicants.length === 0 ? (

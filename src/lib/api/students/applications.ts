@@ -1,54 +1,37 @@
+import { authFetch, deleteFetch } from "@/lib/get-session";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export type ApplicationStatus = "Accepted" | "Declined";
 
-export const getStudentApplications = async (email: string) => {
-    try {
-        const res = await fetch(
-            `${BASE_URL}/applications/student/${encodeURIComponent(email)}`,
-            {
-                cache: "no-store",
-            }
-        );
 
-        if (!res.ok) {
-            // Fallback to query param
-            const queryRes = await fetch(
-                `${BASE_URL}/appplications?email=${encodeURIComponent(email)}`,
-                {
-                    cache: "no-store",
-                }
-            );
-            if (queryRes.ok) return queryRes.json();
-            throw new Error("Failed to fetch student applications");
-        }
+export const getStudentApplications = async (email?: string) => {
+    const api = email
+        ? `${BASE_URL}/applications?applicantEmail=${encodeURIComponent(email)}`
+        : `${BASE_URL}/applications`;
 
-        return res.json();
-    } catch (err) {
-        console.error("Failed to fetch student applications:", err);
-        return [];
-    }
+    return await authFetch(api);
 };
 
-export const getApplications = async (email?: string) => {
-    try {
-        const url = email
-            ? `${BASE_URL}/applications/student/${encodeURIComponent(email)}`
-            : `${BASE_URL}/appplications`;
+export const getApplications = async (query: string) => {
+    const api = `${BASE_URL}/applications?${query}`
+    const res = await authFetch(api)
+    return res;
+};
 
-        const res = await fetch(url, {
-            cache: "no-store",
-        });
+export const deleteApplication = async (id: string) => {
+    const api = `${BASE_URL}/applications/${id}`;
+    return await deleteFetch(api);
+};
 
-        if (!res.ok) {
-            throw new Error("Failed to fetch applications");
-        }
+export const getApplicationsCount = async (query: string): Promise<{ count: number }> => {
 
-        return res.json();
-    } catch (err) {
-        console.error("Failed to fetch applications:", err);
-        return [];
-    }
+    const api = `${BASE_URL}/applications/count?${query}`
+
+    const result = await authFetch(api)
+
+    return result;
+
 };
 
 export const updateApplicationStatus = async (id: string, status: ApplicationStatus) => {
