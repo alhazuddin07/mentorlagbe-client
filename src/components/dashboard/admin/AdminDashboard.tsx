@@ -64,10 +64,9 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
         (t) => t.approvalStatus === "pending"
     );
 
-    // Sum platform revenue from Stripe payments (amount in cents/poisha for Stripe, convert to BDT)
-    const totalRevenueBDT = paymentsList.reduce((sum, p) => {
+    // Sum platform revenue from Stripe payments (USD subscriptions)
+    const totalRevenueUSD = paymentsList.reduce((sum, p) => {
         const amt = Number(p.amount) || 0;
-        // Stripe usually records amounts in smallest currency unit (cents/poisha)
         const inUnits = amt > 1000 ? Math.round(amt / 100) : amt;
         return sum + inUnits;
     }, 0);
@@ -96,7 +95,7 @@ export default async function AdminDashboard({ user }: AdminDashboardProps) {
         },
         {
             title: "Platform Revenue",
-            value: `৳${totalRevenueBDT.toLocaleString()}`,
+            value: `$${totalRevenueUSD.toLocaleString()}`,
             description: `${paymentsList.length} verified subscriptions`,
             icon: CreditCard,
             color: "text-purple-600 bg-purple-500/10",

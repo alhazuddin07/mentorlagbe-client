@@ -5,14 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { getPayments } from "@/lib/api/actions/paymens";
 import type { Payment } from "@/types/payment";
 
-function formatAmount(amount?: number, currency = "bdt") {
-    if (typeof amount !== "number" || isNaN(amount)) return "৳0";
-    // If amount is stored in smallest currency unit (poisha/cents >= 10000, e.g. 200000 for 2,000 BDT)
-    const normalized = amount >= 10000 ? amount / 100 : amount;
-    if (currency.toLowerCase() === "bdt") {
+function formatAmount(amount?: number, currency = "usd") {
+    if (typeof amount !== "number" || isNaN(amount)) return "$0";
+    const normalized = amount >= 1000 ? amount / 100 : amount;
+    const cur = (currency || "usd").toLowerCase();
+    if (cur === "bdt") {
         return `৳${normalized.toLocaleString("en-BD", { maximumFractionDigits: 0 })}`;
     }
-    return `${normalized.toLocaleString()} ${currency.toUpperCase()}`;
+    return `$${normalized.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatDate(dateValue?: string | Date) {
@@ -34,7 +34,7 @@ export default async function AdminTransactionsPage() {
     const payments: Payment[] = await getPayments();
 
     const totalRevenue = payments.reduce((sum, tx) => {
-        const val = typeof tx.amount === "number" ? (tx.amount >= 10000 ? tx.amount / 100 : tx.amount) : 0;
+        const val = typeof tx.amount === "number" ? (tx.amount >= 1000 ? tx.amount / 100 : tx.amount) : 0;
         return sum + val;
     }, 0);
 
@@ -63,7 +63,7 @@ export default async function AdminTransactionsPage() {
                     </div>
                     <div className="mt-3">
                         <div className="text-2xl font-bold tracking-tight">
-                            ৳{totalRevenue.toLocaleString("en-BD", { maximumFractionDigits: 0 })}
+                            ${totalRevenue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                         <p className="mt-1 flex items-center text-xs text-emerald-600">
                             <ArrowUpRight className="mr-0.5 size-3.5" />

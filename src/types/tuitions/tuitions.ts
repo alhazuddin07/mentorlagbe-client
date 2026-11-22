@@ -37,7 +37,14 @@ export interface ITuitionPost {
 
 export interface IApplyTuition {
     tuitionId: string;
+    tutorEmail?: string | null;
+    studentName?: string;
+    studentEmail?: string;
     phone: string;
     preferredSchedule: string;
     learningNote: string;
+    appliedDate?: Date | string;
+    tuitionTitle?: string;
+    classLavel?: string;
+    status?: string;
 }

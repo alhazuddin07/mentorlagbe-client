@@ -47,12 +47,18 @@ const statusStyles: Record<string, { label: string; icon: React.ElementType; cla
         className:
             "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-400",
     },
+    pending: {
+        label: "Pending Review",
+        icon: Clock,
+        className:
+            "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-400",
+    },
 };
 
 export default async function TutorApplicantsPage() {
     const applicants: IApplication[] = await getApplications();
 
-    const pendingCount = applicants.filter((a) => a.status === "Awaiting Decision").length;
+    const pendingCount = applicants.filter((a) => a.status === "pending" || a.status === "Awaiting Decision").length;
     const acceptedCount = applicants.filter((a) => a.status === "Accepted").length;
 
     const stats = [

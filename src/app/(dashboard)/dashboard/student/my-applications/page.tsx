@@ -80,7 +80,7 @@ export default async function StudentApplicationsPage() {
                     <div className="divide-y divide-border">
                         {sortedApplications.map((app) => {
                             const isAccepted = app.status === "Accepted";
-                            const isPending = app.status === "Awaiting Decision";
+                            const isPending = (app.status || "").toLowerCase() === "pending" || app.status === "Awaiting Decision";
                             const isDeclined = !isAccepted && !isPending;
 
                             return (

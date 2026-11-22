@@ -104,7 +104,7 @@ export default function BookmarkButton({
                     title: "Upgrade to Pro",
                     description: `Free plan limit reached (${FREE_BOOKMARK_LIMIT} bookmarks). Upgrade to Pro for unlimited bookmarks!`,
                 });
-                router.push("/payment");
+                router.push("/pricing");
                 return;
             }
 
@@ -146,7 +146,7 @@ export default function BookmarkButton({
                             (err as Error).message ||
                             "Upgrade to Pro for unlimited bookmarks.",
                     });
-                    router.push("/payment");
+                    router.push("/pricing");
                 }
             }
         }

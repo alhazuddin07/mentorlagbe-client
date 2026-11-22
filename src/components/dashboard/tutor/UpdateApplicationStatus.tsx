@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 interface Props {
     applicationId: string;
-    status: "Awaiting Decision" | "Accepted" | "Declined";
+    status: string;
 }
 
 const UpdateApplicationStatus = ({ applicationId, status }: Props) => {
@@ -39,7 +39,8 @@ const UpdateApplicationStatus = ({ applicationId, status }: Props) => {
         }
     };
 
-    if (status !== "Awaiting Decision") return null;
+    const isActionable = status === "pending" || status === "Awaiting Decision";
+    if (!isActionable) return null;
 
     return (
         <>

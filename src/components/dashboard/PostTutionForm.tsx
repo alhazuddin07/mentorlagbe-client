@@ -149,7 +149,7 @@ export default function PostTuitionForm() {
                     description: error.message
                 });
 
-                router.push("/payment");
+                router.push("/pricing");
                 return;
             }
 

@@ -23,22 +23,22 @@ export default function PaymentCancelPage() {
                     </Badge>
 
                     <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                        Payment Was Not Completed
+                        Subscription Not Completed
                     </h1>
 
                     <p className="mx-auto mt-3 max-w-sm text-sm text-muted-foreground sm:text-base">
-                        Your checkout session was cancelled. No charge has been made to your account or payment card.
+                        Your checkout session was cancelled. No charge has been made to your payment method.
                     </p>
 
                     {/* Summary box */}
                     <div className="mt-8 rounded-2xl border border-border bg-muted/40 p-5 text-left space-y-3">
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">Intended Plan</span>
-                            <span className="font-semibold text-foreground">MentorLagbe Pro Plan</span>
+                            <span className="font-semibold text-foreground">MentorLagbe Pro Subscription</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Amount</span>
-                            <span className="font-semibold text-foreground">৳2,000 / month</span>
+                            <span className="text-muted-foreground">Monthly Rate</span>
+                            <span className="font-semibold text-foreground">$10 (Student) / $15 (Tutor)</span>
                         </div>
                         <div className="flex items-center justify-between text-sm border-t border-border pt-3">
                             <span className="text-muted-foreground">Status</span>
@@ -52,18 +52,18 @@ export default function PaymentCancelPage() {
                     <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                         <Button
                             nativeButton={false}
-                            render={<Link href="/payment" />}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold shadow-md"
+                            render={<Link href="/pricing" />}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold shadow-md cursor-pointer"
                         >
                             <RefreshCw className="size-4" />
-                            Try Payment Again
+                            View Plans & Try Again
                         </Button>
 
                         <Button
                             variant="outline"
                             nativeButton={false}
                             render={<Link href="/dashboard" />}
-                            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold cursor-pointer"
                         >
                             <LayoutDashboard className="size-4" />
                             Return to Dashboard
@@ -83,7 +83,7 @@ export default function PaymentCancelPage() {
 
                 <div className="mt-8 flex items-center justify-center gap-2 text-center text-xs text-muted-foreground">
                     <HelpCircle className="size-3.5" />
-                    <span>Having trouble checking out? Feel free to contact our support team.</span>
+                    <span>Having trouble subscribing? Feel free to contact our support team.</span>
                 </div>
             </div>
         </main>

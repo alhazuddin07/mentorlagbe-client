@@ -51,8 +51,18 @@ export const auth = betterAuth({
                         data: {
                             ...user,
                             role,
+                            plan: "free",
                         },
                     };
+                },
+                after: async (user) => {
+                    try {
+                        await db.collection("users").updateOne(
+                            { email: user.email },
+                            { $set: user },
+                            { upsert: true }
+                        );
+                    } catch {}
                 },
             },
         },

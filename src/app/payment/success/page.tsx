@@ -99,8 +99,8 @@ export default async function Success({
 
                     <span className="mt-4 rounded-full bg-green-100 px-4 py-1.5 text-xs font-semibold text-green-700 dark:bg-green-500/10 dark:text-green-400">
                         {alreadyVerified
-                            ? 'Already Verified'
-                            : `Payment ${payment.paymentStatus}`}
+                            ? 'Subscription Active'
+                            : 'Subscription Activated'}
                     </span>
                 </div>
 
@@ -170,12 +170,11 @@ export default async function Success({
                             <CreditCard size={20} className="text-gray-600 dark:text-gray-300" />
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500">Amount Paid</p>
+                            <p className="text-xs text-gray-500">Subscription Amount</p>
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                {(payment.amount / 100).toLocaleString('en-BD', {
-                                    style: 'currency',
-                                    currency: payment.currency.toUpperCase(),
-                                })}
+                                {typeof payment.amount === "number"
+                                    ? `$${(payment.amount >= 100 ? payment.amount / 100 : payment.amount).toFixed(2)}/month`
+                                    : "$10.00/month"}
                             </p>
                         </div>
                     </div>

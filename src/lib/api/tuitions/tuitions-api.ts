@@ -144,18 +144,6 @@ export const getTuitionApplicationCount = async (tuitionId: string): Promise<{ c
     return res.json();
 };
 
-export const getStudentApplicationCount = async (email: string): Promise<{ count: number }> => {
-    const res = await fetch(`${BASE_URL}/applications/count/${encodeURIComponent(email)}`, {
-        cache: "no-store"
-    });
-
-    if (!res.ok) {
-        throw new Error("Failed to get application count");
-    }
-
-    return res.json();
-};
-
 export async function getLatestTuitions(): Promise<ITuition[]> {
     try {
         const response = await fetch(`${BASE_URL}/all-tuitions`, {

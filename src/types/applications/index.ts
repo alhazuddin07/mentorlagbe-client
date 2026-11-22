@@ -1,6 +1,7 @@
 export interface IApplication {
     _id?: string;
     tuitionId: string;
+    tutorEmail?: string | null;
     studentName: string;
     studentEmail: string;
     phone: string;
@@ -9,5 +10,5 @@ export interface IApplication {
     appliedDate: string;
     tuitionTitle: string;
     classLavel: string;
-    status: "Awaiting Decision" | "Accepted" | "Rejected" | "Declined";
+    status: "pending" | "Awaiting Decision" | "Accepted" | "Rejected" | "Declined";
 }

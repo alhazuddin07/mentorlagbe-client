@@ -1,16 +1,22 @@
-import { ArrowLeft, CreditCard, XCircle } from "lucide-react";
+import { ArrowLeft, CreditCard, XCircle, ShieldCheck } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
-
-
-const plan = {
-    name: "MentorLagbe Pro Plan",
-    description: "Access to all features including unlimited applications, priority support, and verified badge.",
-    price: "৳2,000",
-};
+import { getServerSession } from "@/lib/get-session";
 
 export async function PaymentContent({ searchParams }: { searchParams: Promise<{ canceled?: string }>}) {
     const { canceled } = await searchParams;
+    const session = await getServerSession();
+    const userRole = (session?.user?.role || "student").toLowerCase();
+    const isTutor = userRole === "tutor";
+
+    const plan = {
+        name: isTutor ? "MentorLagbe Tutor Pro Plan" : "MentorLagbe Student Pro Plan",
+        description: isTutor
+            ? "Unlimited tuition postings, featured tutor listings, applicant insights, and priority support."
+            : "Unlimited tuition applications, unlimited bookmarks, priority review, verified badge, and priority support.",
+        price: isTutor ? "$15" : "$10",
+        period: "/month",
+    };
 
     return (
         <div className="flex-1 bg-background text-foreground">
@@ -28,7 +34,7 @@ export async function PaymentContent({ searchParams }: { searchParams: Promise<{
                     <div className="mt-6 flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3">
                         <XCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
                         <p className="text-sm text-destructive">
-                            Your payment was cancelled. No charge was made. You can try again below.
+                            Your payment was cancelled. No charge was made. You can choose a plan whenever you&apos;re ready.
                         </p>
                     </div>
                 )}
@@ -50,16 +56,19 @@ export async function PaymentContent({ searchParams }: { searchParams: Promise<{
                                 </p>
                             </div>
                             <p className="text-lg font-semibold tabular-nums">
-                                {plan.price}
+                                {plan.price}{plan.period}
                             </p>
                         </div>
 
                         <div className="my-6 border-t border-border" />
 
                         <div className="flex items-center justify-between gap-6 text-lg font-semibold">
-                            <span>Total</span>
+                            <span>Total Due Today</span>
                             <span className="tabular-nums">{plan.price}</span>
                         </div>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            Billed monthly until cancelled. Cancel anytime from your account.
+                        </p>
                     </section>
 
                     {/* Payment method */}
@@ -69,12 +78,12 @@ export async function PaymentContent({ searchParams }: { searchParams: Promise<{
                         <div className="mt-4 overflow-hidden rounded-xl border border-border bg-card">
                             <div className="flex items-center gap-2 border-b border-border bg-muted px-4 py-3 text-sm font-medium">
                                 <CreditCard className="size-4 text-muted-foreground" />
-                                Card
+                                Stripe Subscription Checkout
                             </div>
                             <p className="px-4 py-4 text-sm leading-relaxed text-muted-foreground">
                                 You&apos;ll be redirected to Stripe&apos;s secure
-                                checkout to complete your payment. Card details
-                                are never stored on MentorLagbe.
+                                checkout to activate your monthly subscription. Card details
+                                are securely processed by Stripe.
                             </p>
                         </div>
 
@@ -83,14 +92,15 @@ export async function PaymentContent({ searchParams }: { searchParams: Promise<{
                                 <Button
                                     type="submit"
                                     role="link"
-                                    className="mt-6 h-14 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/25 transition-transform hover:-translate-y-0.5 hover:bg-primary/90 active:translate-y-0"
+                                    className="mt-6 h-14 w-full rounded-xl text-base font-semibold shadow-lg shadow-primary/25 transition-transform hover:-translate-y-0.5 hover:bg-primary/90 active:translate-y-0 cursor-pointer"
                                 >
-                                    Pay {plan.price}
+                                    Subscribe for {plan.price}/month
                                 </Button>
                             </section>
                         </form>
 
-                        <p className="mt-5 text-center text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                        <p className="mt-5 flex items-center justify-center gap-1.5 text-center text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                            <ShieldCheck className="size-3.5 text-primary" />
                             Powered by Stripe
                         </p>
                     </section>

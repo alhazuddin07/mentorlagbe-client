@@ -1,10 +1,11 @@
+import { Suspense } from "react";
 import { ShieldCheck } from "lucide-react";
 import { PricingPlans } from "@/components/payments/PricingPlans";
 
 export const metadata = {
     title: "Pricing | MentorLagbe",
     description:
-        "Free and Pro plans for students and tutors on MentorLagbe. Upgrade to Pro for unlimited applications, featured listings, and priority support.",
+        "Pro subscription plans for students ($10/mo) and tutors ($15/mo) on MentorLagbe. Upgrade to Pro for unlimited applications, featured listings, and priority support.",
 };
 
 export default function PricingPage() {
@@ -21,19 +22,21 @@ export default function PricingPage() {
 
                 <p className="mt-3 text-base text-muted-foreground">
                     Start free and upgrade to Pro whenever you&apos;re ready.
-                    One plan for learning, one for teaching — both secured by
-                    Stripe.
+                    $10/month for students, $15/month for tutors — all secured and
+                    managed by Stripe.
                 </p>
             </div>
 
             <div className="mt-10">
-                <PricingPlans />
+                <Suspense fallback={<div className="text-center py-12 text-sm text-muted-foreground">Loading pricing plans...</div>}>
+                    <PricingPlans />
+                </Suspense>
             </div>
 
             <div className="mx-auto mt-12 max-w-4xl border-t border-border pt-6">
                 <p className="flex items-center justify-center gap-2 text-center text-sm text-muted-foreground">
                     <ShieldCheck className="size-4 shrink-0 text-primary" />
-                    Secure checkout by Stripe · Prices in BDT · Cancel anytime
+                    Secure recurring subscription by Stripe · $10/mo for Students, $15/mo for Tutors · Cancel anytime
                 </p>
             </div>
         </div>
