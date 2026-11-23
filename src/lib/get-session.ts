@@ -1,4 +1,6 @@
+
 "use server";
+
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -7,38 +9,46 @@ export const getServerSession = async () => {
     return await auth.api.getSession({
         headers: await headers(),
     });
-}
+};
 
+// Get authenticated user's token
 export const getToken = async () => {
     const session = await getServerSession();
-    if (!session || !session.session?.token) {
-        redirect('/unauthorized');
-    }
-    return session.session.token;
-}
 
+    if (!session || !session.session?.token) {
+        redirect("/unauthorized");
+    }
+
+    return session.session.token;
+};
+
+// GET request - Protected API
 export const authFetch = async (api: string) => {
     const token = await getToken();
-    const res = await fetch(api, {
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-    })
 
-    if (res.status === 401 || res.status === 403) {
-        redirect('/unauthorized');
+    const res = await fetch(api, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+    });
+
+    if (res.status === 401) {
+        redirect("/unauthorized");
     }
 
     return res.json();
-}
+};
 
+// POST request - Protected API
 export const authPost = async (api: string, data: unknown) => {
     const token = await getToken();
 
     const res = await fetch(api, {
         method: "POST",
         headers: {
-            authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
@@ -51,15 +61,40 @@ export const authPost = async (api: string, data: unknown) => {
     return res.json();
 };
 
+// PATCH request - Protected API
+export const authUpdate = async (api: string, data: unknown) => {
+    const token = await getToken();
+
+    const res = await fetch(api, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (res.status === 401) {
+        redirect("/unauthorized");
+    }
+
+    return res.json();
+};
+
+// DELETE request - Protected API
 export const deleteFetch = async (api: string) => {
     const token = await getToken();
 
     const res = await fetch(api, {
         method: "DELETE",
         headers: {
-            authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
         },
     });
+
+    if (res.status === 401) {
+        redirect("/unauthorized");
+    }
 
     const result = await res.json();
 
@@ -72,23 +107,4 @@ export const deleteFetch = async (api: string) => {
     }
 
     return result;
-};
-
-export const authUpdate = async (api: string, data: object) => {
-    const token = await getToken();
-
-    const res = await fetch(api, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        redirect("/unauthorized");
-    }
-
-    return res.json();
 };

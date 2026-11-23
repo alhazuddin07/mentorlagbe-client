@@ -1,46 +1,48 @@
-import { authUpdate } from "@/lib/get-session";
 
+import {
+    authFetch,
+    authUpdate,
+} from "@/lib/get-session";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
+// Get All Users (Admin Only)
 export const getUser = async () => {
     try {
-        const res = await fetch(`${BASE_URL}/users`, {
-            cache: "no-store"
-        });
-        if (!res.ok) return [];
-        return res.json();
-    } catch (err) {
-        console.error("Failed to fetch users:", err);
+        const api = `${BASE_URL}/users`;
+
+        return await authFetch(api);
+
+    } catch (error) {
+        console.error("Failed to fetch users:", error);
         return [];
     }
-}
-
-export const getUserPremiumById = async(userId: string) =>{
-    const res = await fetch(`${BASE_URL}/users/${userId}/premium`, {
-        cache: "no-store"
-    });
-    return res.json();
 };
 
-export const updateUserStatus = async ( userId: string, status: "active" | "inactive" ) => {
-    const res = await fetch(`${BASE_URL}/users/${userId}/status`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-    });
+// Get User Premium Status
+export const getUserPremiumById = async (userId: string) => {
+    const api = `${BASE_URL}/users/${encodeURIComponent(userId)}/premium`;
 
-    if (!res.ok) {
-        throw new Error("Failed to update user status");
-    }
-
-    return res.json();
+    return await authFetch(api);
 };
 
-export const updateUserRole = async ( id: string, role: "admin" | "student" | "tutor" ) => {
-    const api = `${BASE_URL}/users/${id}/role`;
+// Update User Status (Admin Only)
+export const updateUserStatus = async (
+    userId: string,
+    status: "active" | "inactive"
+) => {
+    const api = `${BASE_URL}/users/${encodeURIComponent(userId)}/status`;
+
+    return await authUpdate(api, { status });
+};
+
+// Update User Role (Admin Only)
+export const updateUserRole = async (
+    id: string,
+    role: "admin" | "student" | "tutor"
+) => {
+    const api = `${BASE_URL}/users/${encodeURIComponent(id)}/role`;
 
     return await authUpdate(api, { role });
 };
