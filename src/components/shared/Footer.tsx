@@ -186,13 +186,14 @@ const Footer = () => {
                 {/* Bottom bar */}
                 <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-center text-xs sm:text-sm text-[#B9AEE0] sm:flex-row sm:text-left">
                     <p>© 2026 MentorLagbe. All rights reserved.</p>
+
                     <div className="flex items-center gap-5">
-                        <Link href="/privacy" className="transition-colors hover:text-white">
+                        <p className="transition-colors hover:text-white cursor-pointer">
                             Privacy policy
-                        </Link>
-                        <Link href="/terms" className="transition-colors hover:text-white">
+                        </p>
+                        <p className="transition-colors hover:text-white cursor-pointer">
                             Terms of service
-                        </Link>
+                        </p>
                     </div>
                 </div>
             </div>
