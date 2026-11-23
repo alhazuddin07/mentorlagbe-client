@@ -1,12 +1,16 @@
+
 "use client";
 
-import { use, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
+
 import {
     Dialog,
     DialogClose,
@@ -16,6 +20,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+
 import {
     ArrowRight,
     LogIn,
@@ -25,79 +30,149 @@ import {
 import { applyForTuition } from "@/lib/api/tuitions/tuitions-api";
 import { ITuition } from "@/types/tuitions/tuitions";
 import { useClientUserSession } from "@/lib/client-side-sessions";
-import { useRouter } from "next/navigation";
-import { getApplicationsCount } from "@/lib/api/students/applications";
+import { getApplicationsCount, getStudentApplications } from "@/lib/api/students/applications";
 import { getUserPremiumById } from "@/lib/api/users/users-api";
 
 const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
     const router = useRouter();
-
-    const [hasApplied, setHasApplied] = useState(false);
-    const [submitting, setSubmitting] = useState()
 
     const { data: session, isPending } = useClientUserSession();
 
     const user = session?.user;
     const userRole = (user?.role || "").toLowerCase();
 
+    const [hasApplied, setHasApplied] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [checkingApplication, setCheckingApplication] = useState(true);
+
+    // Check whether the student has already applied
+    useEffect(() => {
+        if (isPending || !user?.email || userRole !== "student") {
+            return;
+        }
+
+        let active = true;
+
+        const checkApplication = async () => {
+            try {
+                const result = await getStudentApplications(user.email);
+
+                const applications = Array.isArray(result)
+                    ? result
+                    : result?.data || result?.applications || [];
+
+                const alreadyApplied = applications.some(
+                    (application: { tuitionId?: string }) =>
+                        application.tuitionId === tuition._id
+                );
+
+                if (active) {
+                    setHasApplied(alreadyApplied);
+                }
+            } catch (error) {
+                console.error("Check application error:", error);
+            } finally {
+                if (active) {
+                    setCheckingApplication(false);
+                }
+            }
+        };
+
+        checkApplication();
+
+        return () => {
+            active = false;
+        };
+    }, [user?.email, userRole, tuition._id, isPending]);
+
     // Handle application submission
-    const handleApplyNow = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleApplyNow = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
         e.preventDefault();
+
+        if (!user?.email || hasApplied || submitting) return;
 
         const form = e.currentTarget;
         const formData = new FormData(form);
 
-        const phone = String(formData.get("phone") || "");
+        try {
+            setSubmitting(true);
 
-        if (user?.role === 'student') {
-
+            // Check premium status and application limit
             const premiumResult = await getUserPremiumById(user.id);
 
-            const countResult = await getApplicationsCount(`applicantId=${user.id}`);
+            const countResult = await getApplicationsCount(
+                `applicantId=${user.id}`
+            );
 
             if (!premiumResult.premium && countResult.count >= 2) {
-                router.push('/payment')
+                router.push("/payment");
                 return;
-
-            } else {
-
-                const applicationData = {
-                    tuitionId: tuition._id,
-                    tutorEmail: tuition.tutorEmail,
-                    studentName: user?.name || "Student",
-                    studentEmail: user?.email,
-                    phone,
-                    preferredSchedule: String(
-                        formData.get("preferredSchedule") || ""
-                    ),
-                    learningNote: String(
-                        formData.get("learningNote") || ""
-                    ),
-                    appliedDate: new Date(),
-                    tuitionTitle: tuition.title,
-                    classLavel: tuition.classLevel,
-                    status: "pending",
-                };
-
-                const result = await applyForTuition(applicationData);
-
-                if (result.insertedId) {
-                    toast.add({
-                        title: "Application Submitted",
-                        description:
-                            "Your application has been submitted to the tutor.",
-                    });
-                }
-
-                setHasApplied(true);
-                form.reset();
-                router.push("/dashboard/student/my-applications");
             }
 
-        } else {
-            console.log("user is not a student");
-        }
+            const applicationData = {
+                tuitionId: tuition._id,
+                tutorEmail: tuition.tutorEmail,
+                studentName: user.name || "Student",
+                studentEmail: user.email,
+                phone: String(formData.get("phone") || ""),
+                preferredSchedule: String(
+                    formData.get("preferredSchedule") || ""
+                ),
+                learningNote: String(
+                    formData.get("learningNote") || ""
+                ),
+                appliedDate: new Date(),
+                tuitionTitle: tuition.title,
+                classLavel: tuition.classLevel,
+                status: "pending",
+            };
 
+            const result = await applyForTuition(applicationData);
+
+            if (!result.success) {
+                if (result.alreadyApplied) {
+                    setHasApplied(true);
+
+                    toast.add({
+                        title: "Already Applied",
+                        description:
+                            "You have already applied for this tuition.",
+                    });
+
+                    return;
+                }
+
+                throw new Error(
+                    result.message || "Application failed"
+                );
+            }
+
+            setHasApplied(true);
+            form.reset();
+
+            toast.add({
+                title: "Application Submitted",
+                description:
+                    "Your application has been submitted to the tutor.",
+            });
+
+            router.push("/dashboard/student/my-applications");
+
+        } catch (error) {
+            console.error("Application error:", error);
+
+            toast.add({
+                title: "Application Failed",
+                description:
+                    error instanceof Error
+                        ? error.message
+                        : "Something went wrong.",
+            });
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     if (isPending) {
@@ -125,6 +200,33 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
             <p className="py-2 text-center text-xs text-muted-foreground">
                 Only students can apply for tuition listings.
             </p>
+        );
+    }
+
+    // Checking previous application
+    if (isPending || (userRole === "student" && checkingApplication)) {
+        return (
+            <Button
+                size="lg"
+                disabled
+                className="w-full gap-2 rounded-xl"
+            >
+                <Loader2 className="size-4 animate-spin" />
+                Checking Application...
+            </Button>
+        );
+    }
+
+    // Already applied
+    if (hasApplied) {
+        return (
+            <Button
+                size="lg"
+                disabled
+                className="w-full gap-2 rounded-xl"
+            >
+                Already Applied
+            </Button>
         );
     }
 
@@ -203,6 +305,7 @@ const ApplyNow = ({ tuition }: { tuition: ITuition }) => {
                             />
                         </div>
 
+                        {/* Action Buttons */}
                         <div className="flex gap-3 pt-2">
                             <DialogClose
                                 render={

@@ -124,6 +124,8 @@ export default function PostTuitionForm() {
 
             setSuccess("Tuition posted successfully!");
 
+            router.refresh();
+
             toast.add({
                 title: "Success",
                 description: "Tution post Created successfully!"

@@ -20,7 +20,7 @@ export const getStudentApplications = async (email?: string) => {
 };
 
 // Get Applications for a Tuition
-export const getApplications = async (query: string) => {
+export const getApplications = async (query: string = "") => {
     const api = `${BASE_URL}/applications?${query}`;
 
     return authFetch(api);

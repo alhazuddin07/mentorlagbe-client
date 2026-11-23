@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import {
@@ -34,6 +34,7 @@ const publicNavItems = [
 ] as const;
 
 export default function Navbar() {
+  const router = useRouter();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -50,6 +51,8 @@ export default function Navbar() {
     setMenuOpen(false);
     setProfileOpen(false);
     await signOut();
+    router.refresh();
+    router.push('/sign-in');
   };
 
   return (

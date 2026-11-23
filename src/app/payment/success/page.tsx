@@ -1,9 +1,10 @@
+
 export const instant = false;
 
-import { checkoutVerify } from '@/lib/api/actions/paymens'
-import { redirect } from 'next/navigation'
-import { connection } from 'next/server'
-import Link from 'next/link'
+import { checkoutVerify } from '@/lib/api/actions/paymens';
+import { redirect } from 'next/navigation';
+import { connection } from 'next/server';
+import Link from 'next/link';
 import {
     CalendarDays,
     CheckCircle2,
@@ -13,35 +14,41 @@ import {
     ReceiptText,
     User,
     UserRound
-} from 'lucide-react'
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { stripe } from '@/lib/stripe';
 
-export default async function Success({ searchParams }: { searchParams: Promise<{ session_id?: string }>}) {
-    await connection()
+export default async function Success({
+    searchParams
+}: {
+    searchParams: Promise<{ session_id?: string }>
+}) {
+    await connection();
 
-    const { session_id } = await searchParams
+    const { session_id } = await searchParams;
 
     if (!session_id) {
-        return redirect('/')
+        redirect('/');
     }
 
-    // Check Stripe session
-    const { status, payment_status } = await stripe.checkout.sessions.retrieve(session_id)
+    // 1. Retrieve Stripe Checkout Session
+    const stripeSession = await stripe.checkout.sessions.retrieve(
+        session_id
+    );
 
-    if (status === 'open') {
-        return redirect('/')
-    }
+    const { status, payment_status } = stripeSession;
 
+    // 2. Validate Stripe payment
     if (status !== 'complete' || payment_status !== 'paid') {
-        return redirect('/')
+        redirect('/');
     }
 
-    // Verify payment from backend
-    const result = await checkoutVerify(session_id)
+    // 3. Verify payment from backend
+    const result = await checkoutVerify(session_id);
 
-    console.log('Verification Result:', result)
+    console.log('Verification Result:', result);
 
+    // 4. Check verification result
     if (!result.success || !result.payment) {
         return (
             <main className="min-h-screen flex items-center justify-center px-4">
@@ -62,11 +69,24 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     </Link>
                 </div>
             </main>
-        )
+        );
     }
 
-    const payment = result.payment
-    const alreadyVerified = result.alreadyVerified
+    // 5. Payment information
+    const payment = result.payment;
+    const alreadyVerified = result.alreadyVerified;
+
+    // 6. Subscription price based on user role
+    const subscriptionAmount =
+        payment.userRole === 'tutor' ? '15.00' : '10.00';
+
+    // 7. Destination based on user role
+    const redirectPath =
+        payment.userRole === 'student'
+            ? '/tuitions'
+            : payment.userRole === 'tutor'
+                ? '/dashboard/tutor/post-tuition'
+                : '/';
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-12">
@@ -111,10 +131,17 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     {/* Customer Name */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <User size={20} className="text-gray-600 dark:text-gray-300" />
+                            <User
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div className="min-w-0">
-                            <p className="text-xs text-gray-500">Customer Name</p>
+                            <p className="text-xs text-gray-500">
+                                Customer Name
+                            </p>
+
                             <p className="text-sm font-medium text-gray-900 dark:text-white">
                                 {payment.userName || 'Not available'}
                             </p>
@@ -124,10 +151,17 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     {/* Customer Email */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <Mail size={20} className="text-gray-600 dark:text-gray-300" />
+                            <Mail
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div className="min-w-0">
-                            <p className="text-xs text-gray-500">Customer Email</p>
+                            <p className="text-xs text-gray-500">
+                                Customer Email
+                            </p>
+
                             <p className="break-all text-sm font-medium text-gray-900 dark:text-white">
                                 {payment.userEmail || 'Not available'}
                             </p>
@@ -137,10 +171,17 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     {/* User Role */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <UserRound size={20} className="text-gray-600 dark:text-gray-300" />
+                            <UserRound
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div>
-                            <p className="text-xs text-gray-500">User Role</p>
+                            <p className="text-xs text-gray-500">
+                                User Role
+                            </p>
+
                             <p className="text-sm font-medium capitalize text-gray-900 dark:text-white">
                                 {payment.userRole || 'Not available'}
                             </p>
@@ -150,27 +191,39 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     {/* Plan Name */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <Crown size={20} className="text-gray-600 dark:text-gray-300" />
+                            <Crown
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div>
-                            <p className="text-xs text-gray-500">Plan Name</p>
+                            <p className="text-xs text-gray-500">
+                                Plan Name
+                            </p>
+
                             <p className="text-sm font-medium text-gray-900 dark:text-white">
                                 {payment.planName || 'Not available'}
                             </p>
                         </div>
                     </div>
 
-                    {/* Amount */}
+                    {/* Subscription Amount */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <CreditCard size={20} className="text-gray-600 dark:text-gray-300" />
+                            <CreditCard
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div>
-                            <p className="text-xs text-gray-500">Subscription Amount</p>
+                            <p className="text-xs text-gray-500">
+                                Subscription Amount
+                            </p>
+
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                {typeof payment.amount === "number"
-                                    ? `$${(payment.amount >= 100 ? payment.amount / 100 : payment.amount).toFixed(2)}/month`
-                                    : "$10.00/month"}
+                                ${subscriptionAmount}/month
                             </p>
                         </div>
                     </div>
@@ -178,10 +231,17 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     {/* Transaction ID */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <ReceiptText size={20} className="text-gray-600 dark:text-gray-300" />
+                            <ReceiptText
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div className="min-w-0">
-                            <p className="text-xs text-gray-500">Transaction ID</p>
+                            <p className="text-xs text-gray-500">
+                                Transaction ID
+                            </p>
+
                             <p className="break-all text-sm font-medium text-gray-900 dark:text-white">
                                 {payment.transactionId || 'Not available'}
                             </p>
@@ -191,12 +251,19 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     {/* Stripe Session ID */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <ReceiptText size={20} className="text-gray-600 dark:text-gray-300" />
+                            <ReceiptText
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div className="min-w-0">
-                            <p className="text-xs text-gray-500">Stripe Session ID</p>
+                            <p className="text-xs text-gray-500">
+                                Stripe Session ID
+                            </p>
+
                             <p className="break-all text-sm font-medium text-gray-900 dark:text-white">
-                                {payment.stripeSessionId}
+                                {payment.stripeSessionId || 'Not available'}
                             </p>
                         </div>
                     </div>
@@ -204,15 +271,27 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     {/* Payment Date */}
                     <div className="flex items-center gap-3">
                         <div className="rounded-lg bg-gray-100 p-2.5 dark:bg-gray-800">
-                            <CalendarDays size={20} className="text-gray-600 dark:text-gray-300" />
+                            <CalendarDays
+                                size={20}
+                                className="text-gray-600 dark:text-gray-300"
+                            />
                         </div>
+
                         <div>
-                            <p className="text-xs text-gray-500">Payment Date</p>
+                            <p className="text-xs text-gray-500">
+                                Payment Date
+                            </p>
+
                             <p className="text-sm font-medium text-gray-900 dark:text-white">
-                                {new Date(payment.paidAt).toLocaleString('en-BD', {
-                                    dateStyle: 'medium',
-                                    timeStyle: 'short',
-                                })}
+                                {payment.paidAt
+                                    ? new Date(payment.paidAt).toLocaleString(
+                                        'en-BD',
+                                        {
+                                            dateStyle: 'medium',
+                                            timeStyle: 'short',
+                                        }
+                                    )
+                                    : 'Not available'}
                             </p>
                         </div>
                     </div>
@@ -227,28 +306,20 @@ export default async function Success({ searchParams }: { searchParams: Promise<
                     </p>
 
                     <Button
-                        className={'w-full p-5'}
+                        className="w-full p-5"
                         nativeButton={false}
                         render={
-                            <Link
-                                href={
-                                    payment.userRole === "student"
-                                        ? "/tuitions"
-                                        : payment.userRole === "tutor"
-                                            ? "/dashboard/tutor/post-tuition"
-                                            : "/"
-                                }
-                            />
+                            <Link href={redirectPath} />
                         }
                     >
-                        {payment.userRole === "student"
-                            ? "Continue Apply more"
-                            : payment.userRole === "tutor"
-                                ? "Continue To Post Tuitions"
-                                : "Continue"}
+                        {payment.userRole === 'student'
+                            ? 'Continue Apply more'
+                            : payment.userRole === 'tutor'
+                                ? 'Continue To Post Tuitions'
+                                : 'Continue'}
                     </Button>
                 </div>
             </div>
         </main>
-    )
+    );
 }

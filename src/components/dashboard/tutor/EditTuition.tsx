@@ -22,6 +22,7 @@ import Image from "next/image";
 import { ITuition } from "@/types/tuitions/tuitions";
 import { updateTuition } from "@/lib/api/tuitions/tuitions-api";
 import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 interface EditTuitionProps {
     item: ITuition;
@@ -29,6 +30,7 @@ interface EditTuitionProps {
 
 const EditTuition = ({ item }: EditTuitionProps) => {
     const [open, setOpen] = useState(false);
+    const router = useRouter();
 
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewImage, setPreviewImage] = useState(item.bannerImage);
@@ -181,6 +183,8 @@ const EditTuition = ({ item }: EditTuitionProps) => {
             if (!result.success) {
                 throw new Error(result.message || "Failed to update tuition");
             }
+
+            router.refresh();
 
             toast.add({
                 title: "success",
