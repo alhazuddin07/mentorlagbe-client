@@ -1,243 +1,171 @@
-# MentorLagbe – Smart Tuition & Mentorship Platform
+# MentorLagbe – Client Side
 
-MentorLagbe is a full-stack tuition management platform that connects students with qualified tutors for personalized academic guidance. Students can explore tuition opportunities, apply for suitable sessions, and track their applications, while tutors can create tuition listings and manage student applications. Admins can manage users, moderate tuition posts, and monitor subscription payments.
+MentorLagbe is a Smart Tuition & Mentorship Platform built with Next.js. It connects students with qualified tutors and provides a seamless platform for finding tuition opportunities, managing applications, and accessing personalized academic guidance.
+
+The frontend provides a responsive and user-friendly experience for Students, Tutors, and Admins with role-based dashboards and subscription management.
 
 ## 🌐 Live Links
 
 - **Live Website:** https://mentorlagbe-client-xi.vercel.app/
 - **Backend API:** https://mentorlagbe-server-zeta.vercel.app/
-- **Client Repository:** [Add Client GitHub Repository URL]
-- **Server Repository:** [Add Server GitHub Repository URL]
+- **Client Repository:** https://github.com/alhazuddin07/mentorlagbe-client
+- **Server Repository:** https://github.com/alhazuddin07/mentorlagbe-server
 
 ## 🚀 Key Features
 
-### 👨‍🎓 Student
-- Register and log in as a student.
-- Browse and search approved tuition listings.
-- Filter tuitions by subject, class level, and learning mode.
+### 🏠 Home Page
+- Modern and responsive landing page.
+- Hero section with tuition search and navigation.
+- Dynamic featured tuition listings.
+- Pricing and subscription plans.
+- How It Works section.
+- Popular subjects and testimonials.
+
+### 🔍 Browse Tuitions
+- Browse approved and active tuition listings.
+- Search tuitions by title and subject.
+- Filter by subject, class level, and learning mode.
 - View detailed tuition information.
-- Apply for tuition and prevent duplicate applications.
-- Track application status: Pending, Accepted, or Rejected.
+
+### 👨‍🎓 Student Dashboard
+- View dashboard statistics.
+- Browse and apply for tuition opportunities.
+- Track application status.
+- View all submitted applications.
 - Cancel pending applications.
-- Upgrade to the Pro plan using Stripe.
-- Manage personal profile information.
+- Upgrade to the Pro subscription plan.
 
-### 👨‍🏫 Tutor
-- Register and log in as a tutor.
-- Create and manage tuition listings.
+### 👨‍🏫 Tutor Dashboard
+- View tuition and applicant statistics.
+- Create new tuition listings.
 - Upload tuition banner images using ImgBB.
-- Edit, delete, and manage tuition posts.
-- Track tuition approval status.
-- Manage student applications.
-- Accept or reject student applications.
-- Free plan supports up to 2 tuition posts.
-- Pro plan supports unlimited tuition posts.
+- Manage created tuition posts.
+- Edit and delete tuition listings.
+- Toggle tuition availability.
+- View and manage student applications.
+- Accept or reject applications.
+- Upgrade to the Pro subscription plan.
 
-### 🛡️ Admin
+### 🛡️ Admin Dashboard
 - View platform statistics.
-- Manage registered users and user roles.
+- Manage registered users.
+- Manage user roles.
 - Approve or reject tuition listings.
-- Monitor tuition activities.
-- View Stripe subscription transactions.
-- Track platform revenue.
+- View subscription transactions.
+- Monitor platform revenue.
+
+### 👤 Authentication & Profile
+- User registration and login.
+- Student and Tutor role selection during registration.
+- Role-based dashboard navigation.
+- Protected routes.
+- Profile information update.
+- Profile picture upload using ImgBB.
+- Sign out functionality.
 
 ### 💳 Payment & Subscription
+- Free and Pro subscription plans.
+- Separate subscription options for Students and Tutors.
 - Stripe Checkout integration.
-- Separate Pro subscription plans for Students and Tutors.
-- Automatic subscription plan updates after successful payment.
-- Payment transaction records.
 - Payment success and cancellation pages.
+- Subscription upgrade after successful payment.
 
 ### 🎨 Additional Features
 - Responsive design for mobile, tablet, and desktop.
-- Role-based authentication and authorization.
-- JWT-protected backend API routes.
-- Image upload using ImgBB API.
-- Toast notifications for user actions.
-- Custom loading, error, and not-found pages.
 - Dark and Light theme support.
+- Toast notifications.
+- Loading states and skeleton loaders.
+- Custom error and 404 pages.
+- Reusable UI components.
+- Clean and consistent user interface.
 
 ## 🛠️ Technology Stack
 
-### Frontend
-- Next.js (App Router)
-- React
-- TypeScript
-- Tailwind CSS
-- Shadcn UI
-- Lucide React
-
-### Backend
-- Node.js
-- Express.js
-- MongoDB
-- MongoDB Native Driver
-
-### Authentication & Security
-- Better Auth
-- Better Auth MongoDB Adapter
-- JWT
-- Role-Based Access Control
-
-### Payment & Media
-- Stripe Checkout
-- Stripe Webhooks / Session Verification
-- ImgBB API
-
-### Deployment
-- Vercel
-
-## 🗄️ Database Collections
-
-MentorLagbe uses four primary MongoDB collections:
-
-| Collection | Purpose |
+| Technology | Purpose |
 |---|---|
-| `users` | Stores user information, roles, profiles, and subscription plans. |
-| `tuitions` | Stores tuition listings created by tutors. |
-| `applications` | Stores student applications and their statuses. |
-| `payments` | Stores Stripe subscription transaction records. |
+| Next.js | React framework |
+| React | User interface |
+| TypeScript | Type safety |
+| Tailwind CSS | Styling |
+| Shadcn UI | UI components |
+| Lucide React | Icons |
+| Better Auth | Authentication |
+| Stripe | Subscription payments |
+| ImgBB API | Image uploads |
+| Sonner | Toast notifications |
 
 ## ⚙️ Installation & Setup
 
 ### Prerequisites
 
-Make sure you have installed:
-
 - Node.js
 - npm
-- MongoDB Atlas account
-- Stripe account
-- ImgBB API key
+- Git
 
-### 1. Clone the repositories
-
-Clone the client and server repositories separately.
+### 1. Clone the Repository
 
 ```bash
-# Clone Client
 git clone YOUR_CLIENT_REPOSITORY_URL
-
-# Clone Server
-git clone YOUR_SERVER_REPOSITORY_URL
 ```
 
-### 2. Install dependencies
-
-For the client:
+### 2. Navigate to the Project Directory
 
 ```bash
 cd mentorlagbe-client
-npm install
 ```
 
-For the server:
+### 3. Install Dependencies
 
 ```bash
-cd mentorlagbe-server
 npm install
 ```
 
-### 3. Configure Environment Variables
-
-Create a `.env.local` file in the client project and configure the required variables.
-
-```env
-BETTER_AUTH_URL=http://localhost:3000
-BETTER_AUTH_SECRET=your_better_auth_secret
-MONGODB_URI=your_mongodb_connection_string
-
-NEXT_PUBLIC_API_URL=http://localhost:5000
-NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key
-```
-
-Configure the server environment variables in its `.env` file:
-
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
-```
-
-Add any additional environment variables required by your implementation.
-
-**Important:** Never commit `.env` or `.env.local` files to GitHub. Keep all secret keys private.
-
-### 4. Run the Development Servers
-
-Start the client:
+### 4. Run the Development Server
 
 ```bash
 npm run dev
 ```
 
-Start the server:
-
-```bash
-npm start
-```
-
-The frontend will run at:
+Open your browser and visit:
 
 ```text
 http://localhost:3000
 ```
 
-The backend will run at:
-
-```text
-http://localhost:5000
-```
-
-## 🔐 Demo Credentials
-
-Use the following credentials to test the application.
-
-### Admin Account
-
-- **Email:** [Add Admin Email]
-- **Password:** [Add Admin Password]
-
-### Tutor Account
-
-- **Email:** [Add Tutor Email]
-- **Password:** [Add Tutor Password]
-
-> Replace the placeholders with your actual demo credentials before publishing the README.
-
 ## 📁 Project Structure
 
 ```text
-MentorLagbe/
+mentorlagbe-client/
 │
-├── mentorlagbe-client/
-│   ├── public/
-│   ├── src/
-│   │   ├── app/
-│   │   ├── components/
-│   │   ├── lib/
-│   │   └── types/
-│   ├── .env.local
-│   └── package.json
+├── public/
 │
-└── mentorlagbe-server/
-    ├── index.js
-    ├── .env
-    └── package.json
+├── src/
+│   ├── app/
+│   ├── components/
+│   ├── hooks/
+│   ├── lib/
+│   └── types/
+│
+├── package.json
+├── package-lock.json
+└── tsconfig.json
 ```
 
-*The structure above is illustrative; adjust it to match the actual repositories.*
+*The structure above is illustrative. Update it according to your actual project structure.*
+
+## 🌐 Deployment
+
+The frontend is deployed on Vercel.
+
+- **Live Website:** https://mentorlagbe-client-xi.vercel.app/
 
 ## 👨‍💻 Author
 
 **Alhaz Uddin**
 
-- GitHub: [Your GitHub Profile]
+- GitHub: https://github.com/alhazuddin07
 - Project: MentorLagbe
 
 ---
 
-⭐ If you find this project useful, consider giving it a star!
+⭐ If you find this project useful, consider giving the repository a star!
