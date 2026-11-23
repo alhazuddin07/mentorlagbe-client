@@ -150,8 +150,6 @@ export default function BookmarkButton({
         // Add bookmark
         try {
             const result = await addBookmark({
-                userId: user.id,
-                userEmail: user.email,
                 tuitionId,
             });
 
