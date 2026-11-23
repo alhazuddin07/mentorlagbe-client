@@ -49,12 +49,12 @@ export default function SignInForm() {
                 return;
             }
 
-            router.push("/dashboard");
-            router.refresh();
             toast.add({
-                title: 'success',
-                description: "Login successfully!"
-            })
+                title: "success",
+                description: "Login successfully!",
+            });
+
+            router.push("/dashboard");
 
         } catch (error) {
             console.error("Sign in error:", error);
@@ -178,7 +178,7 @@ export default function SignInForm() {
                         href="#"
                         className="text-sm font-medium text-[#5B3DF5] hover:underline"
                     >
-                        Forgot password? 
+                        Forgot password?
                     </Link>
                 </div>
 
