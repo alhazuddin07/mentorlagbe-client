@@ -1,6 +1,5 @@
-// This page fetches uncached user accounts from the server, so allow blocking navigation.
 export const instant = false;
-
+import { connection } from "next/server";
 import { Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getUser } from "@/lib/api/users/users-api";
@@ -10,6 +9,7 @@ import { IUser } from "@/types/user";
 
 
 export default async function AdminUsersPage() {
+    await connection();
 
     const users: IUser[] = await getUser();
 

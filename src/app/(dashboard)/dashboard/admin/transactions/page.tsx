@@ -1,4 +1,5 @@
 export const instant = false;
+import { connection } from "next/server";
 
 import { CreditCard, DollarSign, ArrowUpRight, TrendingUp, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +32,7 @@ function formatDate(dateValue?: string | Date) {
 }
 
 export default async function AdminTransactionsPage() {
+    await connection();
     const payments: Payment[] = await getPayments();
 
     const totalRevenue = payments.reduce((sum, tx) => {

@@ -1,4 +1,5 @@
 export const instant = false;
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +15,7 @@ import { getServerSession } from "@/lib/get-session";
 import { ArrowLeft } from "lucide-react";
 
 const DashboardContent = async ({ children }: { children: React.ReactNode }) => {
+    await connection();
     const session = await getServerSession();
 
     if (!session || !session.user) {

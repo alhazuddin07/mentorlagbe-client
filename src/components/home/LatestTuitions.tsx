@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -140,8 +141,9 @@ function TuitionCard({ tuition }: TuitionCardProps) {
 
 
 export default async function LatestTuitions() {
+  await connection();
+
   const tuitions = await getLatestTuitions();
-  console.log("worked", tuitions);
 
   return (
     <section className="bg-white px-5 py-16 md:px-8 lg:py-20">

@@ -1,6 +1,5 @@
-
-// This page fetches uncached tuition data from the server, so allow blocking navigation.
 export const instant = false;
+import { connection } from "next/server";
 
 import {
     ClipboardList,
@@ -24,6 +23,7 @@ import { ITuition } from "@/types/tuitions/tuitions";
 import Image from "next/image";
 
 export default async function AdminTuitionsPage() {
+    await connection();
     const tuitions: ITuition[] = await getTuitions();
 
     const pendingTuitions = tuitions.filter(
