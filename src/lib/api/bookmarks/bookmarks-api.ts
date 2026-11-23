@@ -1,63 +1,39 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-export const getBookmarks = async (userIdentifier: string) => {
+import { authFetch, authPost, deleteFetch } from "@/lib/get-session";
+import { IBookmark } from "@/types/bookmarks/bookmarks";
+
+export const getBookmarks = async ( userId: string ): Promise<IBookmark[]> => {
     try {
-        const res = await fetch(
-            `${BASE_URL}/bookmarks/${encodeURIComponent(userIdentifier)}`,
-            {
-                cache: "no-store",
-            }
-        );
-        if (!res.ok) return [];
-        return res.json();
-    } catch (err) {
-        console.error("Failed to fetch bookmarks:", err);
-        return [];
+        const api =  `${BASE_URL}/bookmarks/${userId}`
+        const result = await authFetch(api);
+
+        return result.data;
+    } catch (error) {
+        console.error("Failed to fetch bookmarks:", error);
+        throw error;
     }
 };
 
-export const addBookmark = async (data: {
-    userId?: string;
-    userEmail?: string;
-    tuitionId: string;
-}) => {
-    const res = await fetch(`${BASE_URL}/bookmarks`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+export const addBookmark = async (data: { userId?: string, userEmail?: string; tuitionId: string }) => {
+    const api = `${BASE_URL}/bookmarks`
+    const result = await authPost(api, data);
 
-    const result = await res.json();
+    if (!result.success) {
+        const error = new Error(result.message || "Failed to add bookmark");
 
-    if (!res.ok) {
-        const error = new Error(
-            result.message || "Upgrade to Pro for unlimited bookmarks."
-        );
         if (result.requiresPayment) {
-            (error as unknown as { requiresPayment: boolean }).requiresPayment = true;
+            (error as Error & { requiresPayment?: boolean }).requiresPayment = true;
         }
+
         throw error;
     }
 
     return result;
 };
 
-export const removeBookmark = async (
-    userIdentifier: string,
-    tuitionId: string
-) => {
-    try {
-        const res = await fetch(
-            `${BASE_URL}/bookmarks/${encodeURIComponent(
-                userIdentifier
-            )}/${encodeURIComponent(tuitionId)}`,
-            {
-                method: "DELETE",
-            }
-        );
-        return res.json();
-    } catch (err) {
-        console.error("Failed to delete bookmark:", err);
-        return { success: false };
-    }
+export const removeBookmark = async (tuitionId: string) => {
+    return await deleteFetch(
+        `${BASE_URL}/bookmarks/${tuitionId}`
+    );
 };

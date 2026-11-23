@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import {
+  ChevronDown,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -118,6 +119,13 @@ export default function Navbar() {
                     className="object-cover"
                   />
                 </span>
+
+                <ChevronDown
+                  className={cn(
+                    "size-4 text-muted-foreground transition-transform duration-200",
+                    profileOpen && "rotate-180"
+                  )}
+                />
               </button>
 
               {/* Backdrop */}

@@ -32,6 +32,25 @@ export const authFetch = async (api: string) => {
     return res.json();
 }
 
+export const authPost = async (api: string, data: unknown) => {
+    const token = await getToken();
+
+    const res = await fetch(api, {
+        method: "POST",
+        headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (res.status === 401) {
+        redirect("/unauthorized");
+    }
+
+    return res.json();
+};
+
 export const deleteFetch = async (api: string) => {
     const token = await getToken();
 
@@ -42,13 +61,34 @@ export const deleteFetch = async (api: string) => {
         },
     });
 
+    const result = await res.json();
+
+    if (!res.ok) {
+        console.error("Delete API Error:", result);
+
+        throw new Error(
+            result.message || "Failed to delete"
+        );
+    }
+
+    return result;
+};
+
+export const authUpdate = async (api: string, data: object) => {
+    const token = await getToken();
+
+    const res = await fetch(api, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+    });
+
     if (res.status === 401 || res.status === 403) {
         redirect("/unauthorized");
     }
 
-    if (!res.ok) {
-        throw new Error("Failed to delete");
-    }
-
-    return await res.json();
+    return res.json();
 };

@@ -5,6 +5,9 @@ import { ITuition } from "@/types/tuitions/tuitions";
 import Link from "next/link";
 import { connection } from "next/server";
 import { BriefcaseBusiness, CheckCircle2, Clock, Users } from "lucide-react";
+import EditTuition from "./EditTuition";
+import DeleteTuition from "./DeleteTuition";
+import ToggleTuition from "./ToggleTuition";
 
 type TuitionWithStatus = ITuition & {
     applicantsCount: number;
@@ -77,18 +80,32 @@ const MyTuitionsPage = async () => {
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                nativeButton={false}
-                                render={
-                                    <Link href={`/dashboard/tutor/applicants?tuitionId=${item._id}`} />
-                                }
-                            >
-                                <Users className="size-3.5" />
-                                {item.applicantsCount}{" "}
-                                {item.applicantsCount === 1 ? "Applicant" : "Applicants"}
-                            </Button>
+                            <div>
+                                <EditTuition item={item} />
+                            </div>
+
+                            <div>
+                                <DeleteTuition item={item} />
+                            </div>
+
+                            <div>
+                                <ToggleTuition item={item} />
+                            </div>
+
+                            <div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    nativeButton={false}
+                                    render={
+                                        <Link href={`/dashboard/tutor/applicants?tuitionId=${item._id}`} />
+                                    }
+                                >
+                                    <Users className="size-3.5" />
+                                    {item.applicantsCount}{" "}
+                                    {item.applicantsCount === 1 ? "Applicant" : "Applicants"}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 ))}

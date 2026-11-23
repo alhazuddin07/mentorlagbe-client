@@ -34,7 +34,7 @@ const features = [
 
 const FeatureComparison = () => {
     return (
-        <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <section className="relative w-full overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
 
             {/* Subtle Background Decoration */}
             <div className="pointer-events-none absolute -left-40 top-10 h-80 w-80 rounded-full bg-violet-100/40 blur-[120px]" />

@@ -1,3 +1,4 @@
+import { authUpdate } from "@/lib/get-session";
 
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -36,4 +37,10 @@ export const updateUserStatus = async ( userId: string, status: "active" | "inac
     }
 
     return res.json();
+};
+
+export const updateUserRole = async ( id: string, role: "admin" | "student" | "tutor" ) => {
+    const api = `${BASE_URL}/users/${id}/role`;
+
+    return await authUpdate(api, { role });
 };

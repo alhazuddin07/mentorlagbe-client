@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useSyncExternalStore, useCallback } from "react";
@@ -5,7 +6,10 @@ import { useRouter } from "next/navigation";
 import { Bookmark } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { toast } from "@/components/ui/toast";
-import { addBookmark, removeBookmark } from "@/lib/api/bookmarks/bookmarks-api";
+import {
+    addBookmark,
+    removeBookmark,
+} from "@/lib/api/bookmarks/bookmarks-api";
 import { cn } from "cn";
 
 interface BookmarkButtonProps {
@@ -19,6 +23,7 @@ const FREE_BOOKMARK_LIMIT = 5;
 function subscribe(callback: () => void) {
     window.addEventListener("mentorlagbe-bookmarks-changed", callback);
     window.addEventListener("storage", callback);
+
     return () => {
         window.removeEventListener("mentorlagbe-bookmarks-changed", callback);
         window.removeEventListener("storage", callback);
@@ -28,6 +33,7 @@ function subscribe(callback: () => void) {
 function getStoredBookmarks(key: string): string[] {
     try {
         if (typeof window === "undefined") return [];
+
         const stored = localStorage.getItem(key);
         return stored ? JSON.parse(stored) : [];
     } catch {
@@ -44,7 +50,9 @@ export default function BookmarkButton({
     const { data: session } = useSession();
     const user = session?.user;
 
-    const userPlan = (user as { plan?: string } | undefined)?.plan || "free";
+    const userPlan =
+        (user as { plan?: string } | undefined)?.plan || "free";
+
     const isPro =
         userPlan === "pro" ||
         (user as { premium?: boolean } | undefined)?.premium === true;
@@ -64,7 +72,9 @@ export default function BookmarkButton({
         () => false
     );
 
-    const handleToggle = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleToggle = async (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -73,6 +83,7 @@ export default function BookmarkButton({
                 title: "Sign in required",
                 description: "Please sign in to bookmark tuitions.",
             });
+
             router.push("/sign-in");
             return;
         }
@@ -80,37 +91,87 @@ export default function BookmarkButton({
         const currentBookmarks = getStoredBookmarks(storageKey);
         const currentlyBookmarked = currentBookmarks.includes(tuitionId);
 
+        // Remove bookmark
         if (currentlyBookmarked) {
-            // Remove bookmark
-            const updated = currentBookmarks.filter((id) => id !== tuitionId);
-            localStorage.setItem(storageKey, JSON.stringify(updated));
-            window.dispatchEvent(
-                new CustomEvent("mentorlagbe-bookmarks-changed")
-            );
+            try {
+                const result = await removeBookmark(tuitionId);
 
-            toast.add({
-                title: "Bookmark removed",
-                description: tuitionTitle
-                    ? `"${tuitionTitle}" removed from bookmarks.`
-                    : "Tuition removed from bookmarks.",
-            });
+                if (!result.success) {
+                    throw new Error(
+                        result.message || "Failed to remove bookmark"
+                    );
+                }
 
-            // Sync with backend
-            removeBookmark(user.id || user.email!, tuitionId);
-        } else {
-            // Check limit: Free students can bookmark up to 5
-            if (!isPro && currentBookmarks.length >= FREE_BOOKMARK_LIMIT) {
+                const updated = currentBookmarks.filter(
+                    (id) => id !== tuitionId
+                );
+
+                localStorage.setItem(
+                    storageKey,
+                    JSON.stringify(updated)
+                );
+
+                window.dispatchEvent(
+                    new CustomEvent("mentorlagbe-bookmarks-changed")
+                );
+
                 toast.add({
-                    title: "Upgrade to Pro",
-                    description: `Free plan limit reached (${FREE_BOOKMARK_LIMIT} bookmarks). Upgrade to Pro for unlimited bookmarks!`,
+                    title: "Bookmark removed",
+                    description: tuitionTitle
+                        ? `"${tuitionTitle}" removed from bookmarks.`
+                        : "Tuition removed from bookmarks.",
                 });
-                router.push("/pricing");
-                return;
+            } catch (error) {
+                console.error("Remove bookmark error:", error);
+
+                toast.add({
+                    title: "Error",
+                    description:
+                        error instanceof Error
+                            ? error.message
+                            : "Failed to remove bookmark. Please try again.",
+                });
             }
 
-            // Save bookmark
+            return;
+        }
+
+        // Check free bookmark limit
+        if (!isPro && currentBookmarks.length >= FREE_BOOKMARK_LIMIT) {
+            toast.add({
+                title: "Upgrade to Pro",
+                description: `Free plan limit reached (${FREE_BOOKMARK_LIMIT} bookmarks). Upgrade to Pro for unlimited bookmarks!`,
+            });
+
+            router.push("/pricing");
+            return;
+        }
+
+        // Add bookmark
+        try {
+            const result = await addBookmark({
+                userId: user.id,
+                userEmail: user.email,
+                tuitionId,
+            });
+
+            if (!result.success) {
+                if (result.requiresPayment) {
+                    router.push("/pricing");
+                }
+
+                throw new Error(
+                    result.message || "Failed to add bookmark"
+                );
+            }
+
             const updated = [...currentBookmarks, tuitionId];
-            localStorage.setItem(storageKey, JSON.stringify(updated));
+
+            localStorage.setItem(
+                storageKey,
+                JSON.stringify(updated)
+            );
+
             window.dispatchEvent(
                 new CustomEvent("mentorlagbe-bookmarks-changed")
             );
@@ -121,34 +182,30 @@ export default function BookmarkButton({
                     ? `"${tuitionTitle}" saved to your bookmarks.`
                     : "Tuition saved to your bookmarks.",
             });
+        } catch (error) {
+            console.error("Add bookmark error:", error);
 
-            // Sync with backend
-            try {
-                await addBookmark({
-                    userId: user.id,
-                    userEmail: user.email,
-                    tuitionId,
+            const err = error as Error & {
+                requiresPayment?: boolean;
+            };
+
+            if (err.requiresPayment) {
+                toast.add({
+                    title: "Upgrade to Pro",
+                    description:
+                        err.message ||
+                        "Upgrade to Pro for unlimited bookmarks.",
                 });
-            } catch (err: unknown) {
-                if ((err as { requiresPayment?: boolean })?.requiresPayment) {
-                    // Rollback
-                    const reverted = getStoredBookmarks(storageKey).filter(
-                        (id) => id !== tuitionId
-                    );
-                    localStorage.setItem(storageKey, JSON.stringify(reverted));
-                    window.dispatchEvent(
-                        new CustomEvent("mentorlagbe-bookmarks-changed")
-                    );
 
-                    toast.add({
-                        title: "Upgrade to Pro",
-                        description:
-                            (err as Error).message ||
-                            "Upgrade to Pro for unlimited bookmarks.",
-                    });
-                    router.push("/pricing");
-                }
+                router.push("/pricing");
+                return;
             }
+
+            toast.add({
+                title: "Error",
+                description:
+                    err.message || "Failed to add bookmark.",
+            });
         }
     };
 

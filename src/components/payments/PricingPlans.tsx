@@ -128,11 +128,14 @@ export function PricingPlans() {
 
                 const data = await res.json();
 
-                if (!res.ok || !data.url) {
-                    throw new Error(data.message || data.error || "Failed to create checkout session");
+                if (!res.ok || !data.success || !data.url) {
+                    throw new Error(
+                        data.message || data.error || "Failed to create checkout session"
+                    );
                 }
 
                 window.location.href = data.url;
+                
             } catch (err) {
                 console.error("Subscription error:", err);
                 setErrorMsg(err instanceof Error ? err.message : "Failed to initiate Stripe Checkout");
@@ -205,7 +208,7 @@ export function PricingPlans() {
                             className={cn(
                                 "relative flex flex-col rounded-2xl border bg-card p-6 sm:p-7 shadow-xs transition-shadow",
                                 plan.highlighted &&
-                                    "border-primary/40 shadow-lg shadow-primary/10 ring-1 ring-primary/25"
+                                "border-primary/40 shadow-lg shadow-primary/10 ring-1 ring-primary/25"
                             )}
                         >
                             {plan.highlighted && (

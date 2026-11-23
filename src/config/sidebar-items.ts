@@ -10,6 +10,7 @@ import {
     Users,
     ClipboardList,
     CreditCard,
+    Bookmark,
 } from "lucide-react";
 
 import type { RoleSidebarItems } from "@/types/sidebar";
@@ -44,6 +45,11 @@ export const roleBaseSidebarItems: RoleSidebarItems = {
                     label: "My Applications",
                     href: "/dashboard/student/my-applications",
                     icon: FileText,
+                },
+                {
+                    label: "My Book-Mark",
+                    href: "/dashboard/student/my-bookmark",
+                    icon: Bookmark,
                 },
             ],
         },

@@ -1,4 +1,4 @@
-import { authFetch } from "@/lib/get-session";
+import { authFetch, authUpdate, deleteFetch } from "@/lib/get-session";
 import { IApplyTuition, ITuition, ITuitionPost } from "@/types/tuitions/tuitions";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -19,6 +19,20 @@ export const getTuitions = async (params?: { status?: string; tutorEmail?: strin
     } catch (err) {
         console.error("Failed to fetch tuitions:", err);
         return [];
+    }
+};
+
+export const toggleTuitionStatus = async (id: string, isActive: boolean) => {
+    try {
+        const api = `${BASE_URL}/tuitions/${id}/toggle-status`;
+
+        const result = await authUpdate(api, { isActive });
+
+        return result;
+
+    } catch (error) {
+        console.error("Toggle tuition status error:", error);
+        throw error;
     }
 };
 
@@ -148,20 +162,26 @@ export const getTuitionApplicationCount = async (tuitionId: string): Promise<{ c
     return res.json();
 };
 
+
 export async function getLatestTuitions(): Promise<ITuition[]> {
     try {
-        const api = `${BASE_URL}/all-tuitions`
-        const response = await authFetch(api)
+        const api = `${BASE_URL}/all-tuitions`;
 
-        if (!response.ok) {
-            throw new Error("Failed to fetch tuitions");
+        const res = await fetch(api, {
+            cache: "no-store",
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to fetch latest tuitions");
         }
 
-        const result = response.data;
+        const result = await res.json();
 
         const tuitions: ITuition[] = Array.isArray(result)
             ? result
-            : result.data || [];
+            : Array.isArray(result?.data)
+                ? result.data
+                : [];
 
         return tuitions
             .filter(
@@ -175,8 +195,37 @@ export async function getLatestTuitions(): Promise<ITuition[]> {
                     new Date(a.createdAt).getTime()
             )
             .slice(0, 4);
+
     } catch (error) {
         console.error("Latest tuitions error:", error);
         return [];
     }
 }
+
+export const updateTuition = async (id: string, updatedData: Partial<ITuition>) => {
+    try {
+        const api = `${BASE_URL}/tuitions/${id}`;
+
+        const result = await authUpdate(api, updatedData);
+
+        return result;
+
+    } catch (error) {
+        console.error("Update tuition error:", error);
+        throw error;
+    }
+};
+
+export const deleteTuition = async (id: string) => {
+    try {
+        const api = `${BASE_URL}/tuitions/${id}`;
+
+        const result = await deleteFetch(api);
+
+        return result;
+
+    } catch (error) {
+        console.error("Delete tuition error:", error);
+        throw error;
+    }
+};
