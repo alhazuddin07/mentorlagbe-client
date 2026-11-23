@@ -12,7 +12,6 @@ const QUICK_LINKS = [
     { label: "Home", href: "/" },
     { label: "Explore Tuitions", href: "/tuitions" },
     { label: "About Us", href: "/about" },
-    { label: "Contact", href: "/contact" },
 ];
 
 const SOCIALS = [
