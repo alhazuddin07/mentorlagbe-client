@@ -36,10 +36,6 @@ const FeatureComparison = () => {
     return (
         <section className="relative w-full overflow-hidden bg-background px-4 py-16 sm:px-6 lg:px-8">
 
-            {/* Subtle Background Decoration */}
-            <div className="pointer-events-none absolute -left-40 top-10 h-80 w-80 rounded-full bg-violet-100/40 blur-[120px] dark:bg-violet-500/10" />
-            <div className="pointer-events-none absolute -right-40 bottom-0 h-80 w-80 rounded-full bg-purple-100/40 blur-[120px] dark:bg-purple-500/10" />
-
             <div className="relative mx-auto max-w-6xl">
 
                 {/* Heading */}

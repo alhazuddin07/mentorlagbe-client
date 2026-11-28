@@ -160,7 +160,7 @@ const HeroSection = () => {
                         />
                         <div className="ml-zoom absolute inset-0">
                             <Image
-                                src="/images/hero-student-clean.png"
+                                src="/images/hero-banner.png"
                                 alt="Student learning with a laptop"
                                 fill
                                 priority
