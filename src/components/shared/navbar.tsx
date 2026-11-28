@@ -1,5 +1,7 @@
-'use client';
 
+"use client";
+
+import ThemeToggle from "@/components/shared/ThemeToggle";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,6 +14,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import BrandLogo from "@/components/shared/brand-logo";
 import { useSession, signOut } from "@/lib/auth-client";
@@ -36,12 +39,18 @@ const publicNavItems = [
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
   const { data: session, isPending } = useSession();
+
   const user = session?.user ?? null;
-  const role = ((user as { role?: string } | null)?.role ?? "student").toLowerCase();
+
+  const role = (
+    (user as { role?: string } | null)?.role ?? "student"
+  ).toLowerCase();
+
   const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
 
   const isActive = (href: string) =>
@@ -50,14 +59,18 @@ export default function Navbar() {
   const handleSignOut = async () => {
     setMenuOpen(false);
     setProfileOpen(false);
+
     await signOut();
+
     router.refresh();
-    router.push('/sign-in');
+    router.push("/sign-in");
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+
       <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+
         {/* Brand */}
         <BrandLogo />
 
@@ -79,6 +92,12 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+
+          {/* Theme Toggle (Desktop) */}
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
+
           {/* Loading skeleton */}
           {isPending && (
             <div className="hidden h-8 w-28 animate-pulse rounded-lg bg-muted sm:block" />
@@ -95,7 +114,11 @@ export default function Navbar() {
               >
                 Sign In
               </Button>
-              <Button nativeButton={false} render={<Link href="/sign-up" />}>
+
+              <Button
+                nativeButton={false}
+                render={<Link href="/sign-up" />}
+              >
                 Sign Up
               </Button>
             </div>
@@ -104,6 +127,7 @@ export default function Navbar() {
           {/* Authenticated — desktop avatar + dropdown */}
           {!isPending && user && (
             <div className="relative hidden md:block">
+
               {/* Avatar button */}
               <button
                 type="button"
@@ -166,13 +190,16 @@ export default function Navbar() {
                         className="object-cover"
                       />
                     </div>
+
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold leading-tight">
                         {user.name}
                       </p>
+
                       <p className="truncate text-xs text-muted-foreground">
                         {user.email}
                       </p>
+
                       {/* Role badge */}
                       <span
                         className={cn(
@@ -189,12 +216,16 @@ export default function Navbar() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-1.5">
+
                     <Button
                       variant="default"
                       size="sm"
                       nativeButton={false}
                       render={
-                        <Link href="/dashboard" onClick={() => setProfileOpen(false)} />
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setProfileOpen(false)}
+                        />
                       }
                       className="w-full justify-start gap-2"
                     >
@@ -227,6 +258,7 @@ export default function Navbar() {
                       <LogOut className="size-4" />
                       Sign Out
                     </Button>
+
                   </div>
                 </div>
               )}
@@ -243,17 +275,23 @@ export default function Navbar() {
             onClick={() => setMenuOpen((o) => !o)}
             className="md:hidden"
           >
-            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {menuOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
           </Button>
+
         </div>
       </nav>
 
-      {/* ── Mobile menu ── */}
+      {/* Mobile menu */}
       {menuOpen && (
         <div
           id="mobile-nav-menu"
           className="border-t bg-background px-4 pb-5 pt-2 md:hidden"
         >
+
           {/* Nav links */}
           <ul className="flex flex-col gap-1">
             {publicNavItems.map((item) => (
@@ -272,9 +310,20 @@ export default function Navbar() {
             ))}
           </ul>
 
+          {/* Mobile Theme Toggle */}
+          <div className="flex items-center justify-between border-b border-border py-3">
+            <span className="text-sm font-medium text-muted-foreground">
+              Appearance
+            </span>
+
+            <ThemeToggle />
+          </div>
+
           <div className="mt-3 border-t border-border pt-3">
+
             {user ? (
               <div className="space-y-3">
+
                 {/* User card */}
                 <div className="flex items-center gap-3 rounded-xl border bg-muted/40 p-3">
                   <div className="relative size-12 shrink-0 overflow-hidden rounded-full border-2 border-primary/20">
@@ -286,11 +335,16 @@ export default function Navbar() {
                       className="object-cover"
                     />
                   </div>
+
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{user.name}</p>
+                    <p className="truncate text-sm font-semibold">
+                      {user.name}
+                    </p>
+
                     <p className="truncate text-xs text-muted-foreground">
                       {user.email}
                     </p>
+
                     {/* Role badge */}
                     <span
                       className={cn(
@@ -341,6 +395,7 @@ export default function Navbar() {
                   <LogOut className="size-4" />
                   Sign Out
                 </Button>
+
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-2">
@@ -352,6 +407,7 @@ export default function Navbar() {
                 >
                   Sign In
                 </Button>
+
                 <Button
                   nativeButton={false}
                   render={<Link href="/sign-up" />}
@@ -361,9 +417,11 @@ export default function Navbar() {
                 </Button>
               </div>
             )}
+
           </div>
         </div>
       )}
+
     </header>
   );
 }

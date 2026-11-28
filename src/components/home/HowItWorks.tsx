@@ -47,16 +47,16 @@ const tutorSteps = [
 
 export default function HowItWorks() {
   return (
-    <section className="overflow-hidden bg-white px-5 py-16 md:px-8 lg:py-20">
+    <section className="overflow-hidden bg-background px-5 py-16 md:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
 
         {/* Section Heading */}
         <div className="mb-10 text-center">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1B1245]">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1B1245] dark:text-foreground">
             How It Works?
           </h2>
 
-          <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#68617E]">
+          <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#68617E] dark:text-muted-foreground">
             Getting started with MentorLagbe is simple!
           </p>
         </div>
@@ -66,7 +66,7 @@ export default function HowItWorks() {
 
           {/* Student Illustration */}
           <div className="relative hidden h-48 items-end justify-center lg:flex">
-            <div className="absolute bottom-4 h-36 w-36 rounded-full bg-[#EEE5FF]" />
+            <div className="absolute bottom-4 h-36 w-36 rounded-full bg-[#EEE5FF] dark:bg-primary/10" />
 
             <Image
               src="/images/student-how-it-works.png"
@@ -81,7 +81,7 @@ export default function HowItWorks() {
           <div className="grid gap-10 md:grid-cols-2 md:gap-0">
 
             {/* For Students */}
-            <div className="text-center md:border-r md:border-[#E6D9FF] md:pr-7">
+            <div className="text-center md:border-r md:border-border md:pr-7">
               <span className="inline-flex rounded-full bg-[#6426D9] px-5 py-2 text-sm font-semibold tracking-wide text-white shadow-md shadow-purple-200">
                 For Students
               </span>
@@ -101,12 +101,12 @@ export default function HowItWorks() {
                       </span>
 
                       {/* Icon Box */}
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F7F2FF] text-[#6426D9] transition-all duration-300 hover:-translate-y-1 hover:bg-[#EEE5FF]">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F7F2FF] text-[#6426D9] transition-all duration-300 hover:-translate-y-1 hover:bg-[#EEE5FF] dark:bg-primary/10 dark:text-primary dark:hover:bg-primary/20">
                         <Icon size={25} strokeWidth={2.2} />
                       </div>
 
                       {/* Step Title */}
-                      <h3 className="mt-3 text-xs sm:text-sm font-semibold text-[#1B1245] leading-snug">
+                      <h3 className="mt-3 text-xs sm:text-sm font-semibold text-[#1B1245] dark:text-foreground leading-snug">
                         {step.title}
                       </h3>
 
@@ -144,12 +144,12 @@ export default function HowItWorks() {
                       </span>
 
                       {/* Icon Box */}
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F7F2FF] text-[#6426D9] transition-all duration-300 hover:-translate-y-1 hover:bg-[#EEE5FF]">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F7F2FF] text-[#6426D9] transition-all duration-300 hover:-translate-y-1 hover:bg-[#EEE5FF] dark:bg-primary/10 dark:text-primary dark:hover:bg-primary/20">
                         <Icon size={25} strokeWidth={2.2} />
                       </div>
 
                       {/* Step Title */}
-                      <h3 className="mt-3 text-xs sm:text-sm font-semibold text-[#1B1245] leading-snug">
+                      <h3 className="mt-3 text-xs sm:text-sm font-semibold text-[#1B1245] dark:text-foreground leading-snug">
                         {step.title}
                       </h3>
 
@@ -169,7 +169,7 @@ export default function HowItWorks() {
 
           {/* Tutor Illustration */}
           <div className="relative hidden h-48 items-end justify-center lg:flex">
-            <div className="absolute bottom-4 h-36 w-36 rounded-full bg-[#EEE5FF]" />
+            <div className="absolute bottom-4 h-36 w-36 rounded-full bg-[#EEE5FF] dark:bg-primary/10" />
 
             <Image
               src="/images/tutor-how-it-works.png"

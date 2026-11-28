@@ -37,7 +37,7 @@ export default function FAQSection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
 
   return (
-    <section className="bg-white px-5 py-14 md:px-8 lg:py-16">
+    <section className="bg-background px-5 py-14 md:px-8 lg:py-16">
       <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-2">
 
         {/* FAQ Content */}
@@ -45,11 +45,11 @@ export default function FAQSection() {
           {/* Heading */}
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1B1245]">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1B1245] dark:text-foreground">
                 Frequently Asked Questions
               </h2>
 
-              <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#68617E]">
+              <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#68617E] dark:text-muted-foreground">
                 Find answers to common questions.
               </p>
             </div>
@@ -57,14 +57,14 @@ export default function FAQSection() {
           </div>
 
           {/* Accordion */}
-          <div className="overflow-hidden rounded-xl border border-[#EEE8FC] bg-white shadow-[0_5px_20px_rgba(91,61,245,0.05)]">
+          <div className="overflow-hidden rounded-xl border border-[#EEE8FC] bg-white shadow-[0_5px_20px_rgba(91,61,245,0.05)] dark:border-white/10 dark:bg-card">
             {faqs.map((faq, index) => {
               const isOpen = activeIndex === index;
 
               return (
                 <div
                   key={index}
-                  className="border-b border-[#EEE8FC] last:border-b-0"
+                  className="border-b border-[#EEE8FC] last:border-b-0 dark:border-white/10"
                 >
                   <button
                     type="button"
@@ -72,15 +72,15 @@ export default function FAQSection() {
                       setActiveIndex(isOpen ? null : index)
                     }
                     aria-expanded={isOpen}
-                    className="flex w-full items-center justify-between gap-4 px-4 py-3.5 text-left transition hover:bg-[#FBF9FF]"
+                    className="flex w-full items-center justify-between gap-4 px-4 py-3.5 text-left transition hover:bg-[#FBF9FF] dark:hover:bg-white/5"
                   >
-                    <span className="text-sm sm:text-base font-semibold text-[#1B1245]">
+                    <span className="text-sm sm:text-base font-semibold text-[#1B1245] dark:text-foreground">
                       {faq.question}
                     </span>
 
                     <ChevronDown
                       size={18}
-                      className={`shrink-0 text-[#6426D9] transition-transform duration-300 ${
+                      className={`shrink-0 text-[#6426D9] dark:text-primary transition-transform duration-300 ${
                         isOpen ? "rotate-180" : ""
                       }`}
                     />
@@ -88,7 +88,7 @@ export default function FAQSection() {
 
                   {isOpen && (
                     <div className="px-4 pb-4">
-                      <p className="text-sm sm:text-base leading-relaxed text-[#68617E]">
+                      <p className="text-sm sm:text-base leading-relaxed text-[#68617E] dark:text-muted-foreground">
                         {faq.answer}
                       </p>
                     </div>
