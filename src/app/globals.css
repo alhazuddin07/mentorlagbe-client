@@ -301,3 +301,20 @@
     background-position: 0% 50%;
   }
 }
+
+/* ===== Auth pages (sign-in / sign-up) =====
+   These pages hardcode light colors, so they must not follow the dark
+   theme: pin color-scheme so native controls and browser autofill render
+   light, and force autofill to the card's white instead of Chrome's grey. */
+.auth-light {
+  color-scheme: light;
+}
+
+.auth-light input:-webkit-autofill,
+.auth-light input:-webkit-autofill:hover,
+.auth-light input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  -webkit-text-fill-color: #17152b;
+  caret-color: #17152b;
+  transition: background-color 9999s ease-out;
+}

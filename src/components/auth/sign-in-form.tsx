@@ -112,7 +112,7 @@ export default function SignInForm() {
                                     email: e.target.value,
                                 })
                             }
-                            className="h-11 border-[#E5E0F5] pl-10 focus-visible:ring-[#5B3DF5]"
+                            className="h-11 border-[#E5E0F5] pl-10 text-[#17152B] placeholder:text-[#A5A0B5] focus-visible:ring-[#5B3DF5]"
                             required
                         />
                     </div>
@@ -138,7 +138,7 @@ export default function SignInForm() {
                                     password: e.target.value,
                                 })
                             }
-                            className="h-11 border-[#E5E0F5] pl-10 pr-11 focus-visible:ring-[#5B3DF5]"
+                            className="h-11 border-[#E5E0F5] pl-10 pr-11 text-[#17152B] placeholder:text-[#A5A0B5] focus-visible:ring-[#5B3DF5]"
                             required
                         />
 
